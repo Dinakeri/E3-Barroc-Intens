@@ -13,11 +13,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // You can keep the factory example if you want more random users.
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Create deterministic test users for each department/role
+        $this->call(TestUsersSeeder::class);
     }
 }
