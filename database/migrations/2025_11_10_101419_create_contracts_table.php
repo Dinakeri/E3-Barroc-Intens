@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
+            // testing purposes only will adjust with foreign keys later
+            $table->string('customer');
+            $table->string('products');
+            $table->string('accesories');
             $table->timestamps();
         });
     }
