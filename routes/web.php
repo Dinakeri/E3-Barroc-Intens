@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('dashboards.contracts', 'finance.contracts')->name('dashboards.contracts');
     Route::view('dashboards.maintenance', 'dashboards.maintenance')->name('dashboards.maintenance');
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
+    Route::view('sales.newCustomer', 'sales.newCustomer')->name('sales.newCustomer');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');

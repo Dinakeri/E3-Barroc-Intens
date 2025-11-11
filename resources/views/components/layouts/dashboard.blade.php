@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-</head>
-<body>
-    <header class="w-4/5 mx-auto">
-        <h1>Dashboard </h1>
+
+@include('partials.head')
+
+<body class="font-sans min-h-screen flex text-white bg-neutral-800">
+    <header class="bg-neutral-900 w-72 shadow-lg fixed">
+        <aside class="flex flex-col h-screen w-4/5 mx-auto">
+            <!-- Logo / Title -->
+            <div class="px-6 py-5 border-b border-neutral-700">
+                <h1 class="text-2xl font-bold text-gray-400 text-left">@yield('title', 'Admin Panel')</h1>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex flex-col flex-grow mt-6">
+                @yield('sidebar')
+            </nav>
+        </aside>
     </header>
-    <main class="w-4/5 mx-auto">
+
+    <main class="flex-1 overflow-y-auto p-6 ml-72">
         {{ $slot }}
     </main>
-    <footer>
-    </footer>
 </body>
+
 </html>
