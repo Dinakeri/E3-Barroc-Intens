@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -20,7 +22,12 @@ Route::middleware(['auth'])->group(function () {
     Route::view('dashboards.invoices', 'finance.invoices')->name('dashboards.invoices');
     Route::view('dashboards.maintenance', 'dashboards.maintenance')->name('dashboards.maintenance');
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
-    Route::view('sales.newCustomer', 'sales.newCustomer')->name('sales.newCustomer');
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::view('customers.create', 'customers.create')->name('customers.create');
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+
+    Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('customer.invoice.download');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');

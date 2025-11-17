@@ -26,47 +26,45 @@
 
     {{-- Assuming you have installed Flux UI and included @fluxAppearance & @fluxScripts in your layout. :contentReference[oaicite:1]{index=1} --}}
     <div class="min-h-screen p-6">
-        <h2 class="text-2xl font-semibold text-white mb-6">Add New Customer</h2>
-
-        <form action="#" method="POST">
+        <form action="route('customers.store')" method="POST">
             @csrf
 
             <flux:field variant="block" class="mb-4">
-                <flux:label for="name">Customer Name</flux:label>
+                <flux:label for="name">Company name</flux:label>
                 <flux:input id="name" name="name" type="text" placeholder="John Doe" required
                     class="w-full" />
                 <flux:error name="name" />
             </flux:field>
 
             <flux:field variant="block" class="mb-4">
-                <flux:label for="email">Email Address</flux:label>
+                <flux:label for="email"> Company email address</flux:label>
                 <flux:input id="email" name="email" type="email" placeholder="example@email.com" required
                     class="w-full" />
                 <flux:error name="email" />
             </flux:field>
 
             <flux:field variant="block" class="mb-4">
-                <flux:label for="phone">Phone Number</flux:label>
+                <flux:label for="phone">Company phone number</flux:label>
                 <flux:input id="phone" name="phone" type="tel" placeholder="+31 6 123 45678" class="w-full" />
                 <flux:error name="phone" />
             </flux:field>
 
             <flux:field variant="block" class="mb-6">
-                <flux:label for="address">Address</flux:label>
+                <flux:label for="address">Commpany address</flux:label>
                 <flux:input id="address" name="address" type="text" placeholder="Street name, City"
                     class="w-full" />
                 <flux:error name="address" />
             </flux:field>
 
             <flux:field variant="block" class="mb-6">
-                <flux:label for="kvk-nummer">KvK-nummer</flux:label>
+                <flux:label for="kvk-nummer">Company kvk-nummer</flux:label>
                 <flux:input id="kvk-nummer" name="kvk-nummer" type="number" placeholder="123456" class="w-full" />
                 <flux:error name="kvk-nummer" />
-            </flux::field>
+                </flux::field>
 
-            <flux:button type="submit" variant="primary" class="w-full">
-                Add Customer
-            </flux:button>
+                <flux:button type="submit" variant="primary" class="w-full">
+                    Add Customer
+                </flux:button>
         </form>
     </div>
 

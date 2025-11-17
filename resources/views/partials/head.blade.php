@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 <script src="https://kit.fontawesome.com/38d77f1558.js" crossorigin="anonymous"></script>
+<script src="path/to/chartjs/dist/chart.umd.min.js"></script>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance

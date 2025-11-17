@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->text('straat')->nullable();
+            $table->text('huisnummer')->nullable();
+            $table->text('postcode')->nullable();
+            $table->text('plaats')->nullable();
+            $table->integer('kvk_nummer')->nullable();
+            $table->enum('status', ['new', 'active', 'pending', 'inactive'])->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

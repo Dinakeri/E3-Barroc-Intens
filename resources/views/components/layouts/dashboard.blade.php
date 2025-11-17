@@ -8,7 +8,7 @@
         <aside class="flex flex-col h-screen w-4/5 mx-auto">
             <!-- Logo / Title -->
             <div class="px-6 py-5 border-b border-neutral-700">
-                <h1 class="text-2xl font-bold text-gray-400 text-left">@yield('title', 'Admin Panel')</h1>
+                <h1 class="text-2xl font-bold text-white text-left">@yield('title', 'Admin Panel')</h1>
             </div>
 
             <!-- Navigation -->
@@ -21,6 +21,9 @@
     <main class="flex-1 overflow-y-auto p-6 ml-72">
         {{ $slot }}
     </main>
+
+    @fluxScripts
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>
