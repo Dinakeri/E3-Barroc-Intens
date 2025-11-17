@@ -22,6 +22,7 @@ class InvoiceController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',
             'due_date' => 'required|date',
+            'bkr' => 'required|in:no',
             'items' => 'nullable|array',
             'items_json' => 'nullable|string',
         ]);

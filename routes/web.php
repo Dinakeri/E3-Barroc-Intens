@@ -23,7 +23,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('invoices', [\App\Http\Controllers\InvoiceController::class, 'store'])->name('invoices.store');
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
     Route::get('test-invoice', [\App\Http\Controllers\InvoiceController::class, 'testPdf'])->name('invoices.test');
-    Route::view('dashboards.invoices', 'finance.invoices')->name('dashboards.invoices');
+    Route::get('dashboards.invoices', function () {
+        $customers = \App\Models\Customer::orderBy('name')->get();
+        return view('finance.invoices', compact('customers'));
+    })->name('dashboards.invoices');
     Route::view('dashboards.maintenance', 'dashboards.maintenance')->name('dashboards.maintenance');
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
 
