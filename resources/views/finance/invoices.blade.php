@@ -1,5 +1,4 @@
-<x-layouts.dashboard>
-    @section('title', 'Financien Dashboard')
+<x-layouts.dashboard title="Financien Dashboard">
     <div class="">
         <h1 class="text-3xl font-bold mb-6 text-left">Financien Dashboard</h1>
         <p>Welcome bij het Financien Dashboard. hier kan je een overzicht vinden van de financiële statistieken en prestaties.</p>
@@ -17,4 +16,7 @@
         </flux:navlist>
     @endsection
 
+    <div class="mt-6">
+        @include('invoices._form')
+    </div>
 </x-layouts.dashboard>
