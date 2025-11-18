@@ -3,7 +3,7 @@
 
 @include('partials.head')
 
-<body class="font-sans min-h-screen flex text-black bg-white">
+<body class="font-sans min-h-screen flex text-white bg-neutral-800">
     <header class="bg-neutral-900 w-72 shadow-lg fixed">
         <aside class="flex flex-col h-screen w-4/5 mx-auto">
             <!-- Logo / Title -->
