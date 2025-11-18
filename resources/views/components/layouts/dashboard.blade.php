@@ -3,7 +3,7 @@
 
 @include('partials.head')
 
-<body class="font-sans min-h-screen flex text-white bg-neutral-800">
+<body class="font-sans min-h-screen flex text-black bg-white">
     <header class="bg-neutral-900 w-72 shadow-lg fixed">
         <aside class="flex flex-col h-screen w-4/5 mx-auto">
             <!-- Logo / Title -->
@@ -18,12 +18,11 @@
         </aside>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 ml-72">
+    <main class="flex-1 overflow-y-auto p-6 ml-72 text-black dark:text-white">
         {{ $slot }}
     </main>
 
     @fluxScripts
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>

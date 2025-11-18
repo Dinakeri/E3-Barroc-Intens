@@ -20,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('dashboards.finance', 'dashboards.finance')->name('dashboards.finance');
     Route::view('dashboards.contracts', 'finance.contracts')->name('dashboards.contracts');
     Route::view('dashboards.invoices', 'finance.invoices')->name('dashboards.invoices');
-    Route::view('dashboards.maintenance', 'dashboards.maintenance')->name('dashboards.maintenance');
+    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
