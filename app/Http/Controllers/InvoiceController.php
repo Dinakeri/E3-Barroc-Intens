@@ -16,6 +16,15 @@ class InvoiceController extends Controller
         return view('invoices.create', compact('customers'));
     }
 
+    /**
+     * Show a listing of stored invoices.
+     */
+    public function index()
+    {
+        $invoices = Invoice::with('customer')->orderByDesc('created_at')->paginate(15);
+        return view('invoices.index', compact('invoices'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -58,6 +67,12 @@ class InvoiceController extends Controller
         $dompdf->render();
 
         $output = $dompdf->output();
+
+        // store PDF to storage and save path on invoice
+        $path = 'invoices/invoice-' . $invoice->id . '.pdf';
+        Storage::put($path, $output);
+        $invoice->update(['pdf_path' => $path]);
+
         return response($output, 200)
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Disposition', 'attachment; filename="invoice-' . $invoice->id . '.pdf"');
@@ -71,6 +86,14 @@ class InvoiceController extends Controller
         $items = [
             ['description' => 'Service A', 'qty' => 1, 'price' => $invoice->total_amount],
         ];
+
+        // If we have a stored PDF, serve it directly
+        if ($invoice->pdf_path && Storage::exists($invoice->pdf_path)) {
+            $content = Storage::get($invoice->pdf_path);
+            return response($content, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'inline; filename="invoice-' . $invoice->id . '.pdf"');
+        }
 
         $html = view('invoices.template', compact('invoice', 'customer', 'items'))->render();
         $dompdf = new Dompdf();
