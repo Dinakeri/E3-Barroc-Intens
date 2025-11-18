@@ -85,4 +85,9 @@ class Customers extends Component
         $this->showModal = false;
         $this->selectedCustomer = null;
     }
+
+    public function generateQuote($customer_id)
+    {
+        return redirect()->route('quotes.generate', $customer_id);
+    }
 }

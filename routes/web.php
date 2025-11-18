@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('customers.create', 'customers.create')->name('customers.create');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 
-    Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('customer.invoice.download');
+    Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');

@@ -24,7 +24,7 @@ class Customer extends Model
     ];
 
     public function quote() {
-        $this->hasOne(Quote::class);
+        return $this->hasOne(Quote::class);
     }
 
 }
