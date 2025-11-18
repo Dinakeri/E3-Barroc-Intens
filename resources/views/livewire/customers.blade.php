@@ -37,7 +37,7 @@
                 <table class="w-full">
                     <thead>
                         <tr class="border-b border-zinc-200 dark:border-zinc-700">
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Name
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Naam
                             </th>
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Email
                             </th>
@@ -47,14 +47,15 @@
                                 Status
                             </th>
                             {{-- <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                            KvK-nummer</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Address
-                        </th> --}}
+                            KvK-nummer</th> --}}
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                Offertes
+                            </th>
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Notities
                             </th>
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                                Actions
+                                Acties
                             </th>
                         </tr>
                     </thead>
@@ -102,6 +103,18 @@
                                             {{ ucfirst($customer->status) }}
                                         </flux:badge>
                                     @endif
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
+                                        @if ($customer->quote)
+                                            <p>{{ $customer->quote ?? '-' }}</p>
+                                        @else
+                                            <flux:button wire:click="generateQuote({{ $customer->id }})" variant="ghost" size="sm">
+                                                Offerte genereren
+                                            </flux:button>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 <td class="px-4 py-3">

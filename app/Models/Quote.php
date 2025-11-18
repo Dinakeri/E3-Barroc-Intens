@@ -10,7 +10,14 @@ class Quote extends Model
     /** @use HasFactory<\Database\Factories\QuoteFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'customer_id',
+        'price',
+        'product',
+        'status',
+    ];
+
     public function customer() {
-        $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class);
     }
 }
