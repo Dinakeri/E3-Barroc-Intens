@@ -37,52 +37,45 @@
                 <table class="w-full">
                     <thead>
                         <tr class="border-b border-zinc-200 dark:border-zinc-700">
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Name
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                Naam
                             </th>
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Email
+
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                Email
                             </th>
-                            {{-- <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Phone
-                        </th> --}}
+
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Status
                             </th>
-                            {{-- <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                            KvK-nummer</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">Address
-                        </th> --}}
+
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                Offertes
+                            </th>
+
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Notities
                             </th>
+
                             <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                                Actions
+                                Acties
                             </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
                         @forelse($customers as $customer)
-                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
+                            <tr onclick="window.location='{{ route('customers.show', $customer->id) }}'"
+                                class="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
+
                                 <td class="px-4 py-3">
                                     <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $customer->name }}
                                     </div>
                                 </td>
 
                                 <td class="px-4 py-3">
-                                    <div class="text-sm text-zinc-600 dark:text-zinc-400">{{ $customer->email }}</div>
+                                    <div class="text-sm text-zinc-600 dark:text-zinc-400">{{ $customer->email }}
+                                    </div>
                                 </td>
-
-                                {{-- <td class="px-4 py-3">
-                                <div class="text-sm text-zinc-900 dark:text-zinc-100">{{ $customer->phone }}</div>
-                            </td> --}}
-
-                                {{-- <td class="px-4 py-3">
-                                <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    {{ trim(($customer->straat ?? '') . ' ' . ($customer->huisnummer ?? ''), ', ' . ($customer->plaats ?? '')) }}
-                                </div>
-                            </td>
-
-                            <td class="px-4 py-3">
-                                <div class="text-sm text-zinc-900 dark:text-zinc-100">{{ $customer->kvk_nummer }}</div>
-                            </td> --}}
 
                                 <td class="px-4 py-3">
                                     @if ($customer->status === 'new')
@@ -106,11 +99,31 @@
 
                                 <td class="px-4 py-3">
                                     <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
+                                        @if ($customer->quote)
+                                            @if ($customer->quote->url)
+                                                <flux:button href="{{ $customer->quote->url }}" variant="ghost"
+                                                    target="_blank" icon:trailing="arrow-up-right">
+                                                    Open PDF
+                                                </flux:button>
+                                            @else
+                                                <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
+                                            @endif
+                                        @else
+                                            <flux:button wire:click.stop="generateQuote({{ $customer->id }})"
+                                                variant="ghost" size="sm">
+                                                Offerte genereren
+                                            </flux:button>
+                                        @endif
+                                    </div>
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
                                         {{ $customer->notes }}</div>
                                 </td>
 
                                 <td class="px-4 py-3">
-                                    <flux:button wire:click="showCustomerDetails({{ $customer }})" variant="ghost"
+                                    <flux:button wire:click.stop="showCustomerDetails({{ $customer }})" variant="ghost"
                                         size="sm">
                                         View Details
                                     </flux:button>
@@ -162,13 +175,13 @@
                     <div>
                         <flux:label>Address</flux:label>
                         <div class="mt-1 text-sm">
-                            {{ trim(($selectedCustomer->straat ?? '') . ' ' . ($selectedCustomer->huisnummer ?? '') . ', ' . ($selectedCustomer->plaats ?? '')) }}
+                            {{ trim(($selectedCustomer->street ?? '') . ' ' . ($selectedCustomer->house_number ?? '') . ', ' . ($selectedCustomer->place ?? '')) }}
                         </div>
                     </div>
 
                     <div>
                         <flux:label>KvK-nummer</flux:label>
-                        <div class="mt-1 text-sm">{{ $selectedCustomer->kvk_nummer ?? '-' }}</div>
+                        <div class="mt-1 text-sm">{{ $selectedCustomer->kvk_number ?? '-' }}</div>
                     </div>
 
                     <div>

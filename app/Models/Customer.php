@@ -14,17 +14,18 @@ class Customer extends Model
         'name',
         'email',
         'phone',
-        'straat',
-        'huisnummer',
+        'contact_person',
+        'street',
+        'house_number',
         'postcode',
-        'plaats',
-        'kvk_nummer',
+        'place',
+        'kvk_number',
         'status',
         'notes',
     ];
 
     public function quote() {
-        $this->hasOne(Quote::class);
+        return $this->hasOne(Quote::class);
     }
 
 }

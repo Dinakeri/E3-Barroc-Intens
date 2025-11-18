@@ -1,5 +1,8 @@
 <x-layouts.dashboard>
     @section('title', 'Financien Dashboard')
+    @section('sidebar')
+        @include('partials.FinanceSidebar')
+    @endsection
     <div class="">
         <h1 class="text-3xl font-bold mb-6 text-left">Financien Dashboard</h1>
         <p>Welcome bij het Financien Dashboard. hier kan je een overzicht vinden van de financiële statistieken en prestaties.</p>

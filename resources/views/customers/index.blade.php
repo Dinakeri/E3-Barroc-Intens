@@ -19,7 +19,7 @@
             </flux:navlist.item>
 
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <flux:navlist.item href="#" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Logout
+            <flux:navlist.item href="{{ route('logout') }}" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Logout
             </flux:navlist.item>
 
         </flux:navlist>

@@ -19,15 +19,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::view('dashboards.finance', 'dashboards.finance')->name('dashboards.finance');
     Route::view('dashboards.contracts', 'finance.contracts')->name('dashboards.contracts');
-    Route::view('dashboards.invoices', 'finance.invoices')->name('dashboards.invoices');
-    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('invoices/create', [\App\Http\Controllers\InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('invoices', [\App\Http\Controllers\InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('invoices', [\App\Http\Controllers\InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+    Route::get('test-invoice', [\App\Http\Controllers\InvoiceController::class, 'testPdf'])->name('invoices.test');
+    Route::get('dashboards.invoices', function () {
+        $customers = \App\Models\Customer::orderBy('name')->get();
+        return view('finance.invoices', compact('customers'));
+    })->name('dashboards.invoices');
+    Route::view('dashboards.maintenance', 'dashboards.maintenance')->name('dashboards.maintenance');
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-    Route::view('customers.create', 'customers.create')->name('customers.create');
+    Route::view('customers/create', 'customers.create')->name('customers.create');
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 
-    Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('customer.invoice.download');
+    Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
