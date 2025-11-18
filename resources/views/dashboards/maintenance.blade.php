@@ -1,7 +1,7 @@
 <x-layouts.dashboard>
     @section('title', 'Onderhoud Dashboard')
     <div>
-        <h1 class="text-3xl font-bold mb-6 text-left text-black">Onderhoud Dashboard</h1>
+        <h1 class="text-3xl font-bold mb-6 text-left text-white">Onderhoud Dashboard</h1>
     </div>
     @section('sidebar')
         <flux:navlist class="w-64">
@@ -16,17 +16,16 @@
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
 
     <main>
-        <div class="text-black flex flex-col gap-6 items-start">
+        <div class="text-white flex flex-col gap-6 items-start">
             <div class="w-full flex gap-8 items-start">
                 <div class="flex flex-col gap-4 items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-black mb-2">Installaties</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">Installaties</h2>
                         <div>
                             <canvas class="w-[500px]" id="totalInstallationsLineChart"></canvas>
                         </div>
                     </div>
-                    <div class="group relative flex w-64 h-12 items-center justify-center border border-[#212121] bg-white/10 text-[#212121] transition-all duration-300 ease-out hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">
-                        <div class="absolute inset-x-0 top-0 flex flex-col gap-3 p-6 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
+                    <div class="group relative flex w-64 h-12 items-center justify-center border border-zinc-500 bg-white/10 text-zinc-100 transition-all duration-300 ease-out hover:border-[#fdd716] hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">                        <div class="absolute inset-x-0 top-0 flex flex-col gap-3 p-6 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
                             <a class="text-xl font-bold" href="">Bekijk alle installaties</a>
                             <p class="text-sm text-[#fdd716]/80">Ontdek de volledige lijst met installaties.</p>
                         </div>
@@ -37,13 +36,12 @@
                 </div>
                 <div class="flex flex-col gap-4 items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-black mb-2">Onderhoud</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">Onderhoud</h2>
                         <div>
                             <canvas class="w-[500px]" id="totalMaintenancesLineChart"></canvas>
                         </div>
                     </div>
-                    <div class="group relative flex w-64 h-12 items-center justify-center border border-[#212121] bg-white/10 text-[#212121] transition-all duration-300 ease-out hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">
-                        <div class="absolute inset-x-0 top-0 flex flex-col gap-3 p-6 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
+                    <div class="group relative flex w-64 h-12 items-center justify-center border border-zinc-500 bg-white/10 text-zinc-100 transition-all duration-300 ease-out hover:border-[#fdd716] hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">                        <div class="absolute inset-x-0 top-0 flex flex-col gap-3 p-6 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
                             <a class="text-xl font-bold" href="">Bekijk alle onderhoudsbeurten</a>
                             <p class="text-sm text-[#fdd716]/80">Zie planning en historische onderhoudslogs.</p>
                         </div>
@@ -54,12 +52,12 @@
                 </div>
                 <div class="flex flex-col gap-4 items-center">
                     <div>
-                        <h2 class="text-2xl font-bold text-black mb-2">Storingen</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">Storingen</h2>
                         <div>
                             <canvas class="w-[500px]" id="totalIncidentsLineChart"></canvas>
                         </div>
                     </div>
-                    <div class="group relative flex w-64 h-12 items-center justify-center border border-[#212121] bg-white/10 text-[#212121] transition-all duration-300 ease-out hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">
+                    <div class="group relative flex w-64 h-12 items-center justify-center border border-zinc-500 bg-white/10 text-zinc-100 transition-all duration-300 ease-out hover:border-[#fdd716] hover:h-62 hover:bg-[#212121] hover:text-[#fdd716] overflow-hidden">
                         <div class="absolute inset-x-0 top-0 flex flex-col gap-3 p-6 opacity-0 translate-y-2 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
                             <a class="text-xl font-bold" href="">Bekijk alle storingen</a>
                             <p class="text-sm text-[#fdd716]/80">Analyseer alle incidentmeldingen en trends.</p>
@@ -71,15 +69,15 @@
                 </div>
             </div>
             <div class="w-full">
-                <div class="mt-12 rounded-xl border border-zinc-200 bg-white p-6 text-black shadow-sm">
+                <div class="mt-12 rounded-xl border border-zinc-200 bg-[#202020] p-6 text-white shadow-sm">
                     <div class="flex flex-col gap-1 mb-6">
                         <h3 class="text-2xl font-semibold">Onderhoudsoverzicht</h3>
-                        <p class="text-sm text-zinc-600">Recent ingeplande of afgeronde onderhoudstaken.</p>
+                        <p class="text-sm text-zinc-100">Recent ingeplande of afgeronde onderhoudstaken.</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead>
-                                <tr class="border-b border-zinc-200 text-left text-sm font-semibold text-zinc-900">
+                                <tr class="border-b border-zinc-200 text-left text-sm font-semibold text-white">
                                     <th class="px-4 py-3">Taak</th>
                                     <th class="px-4 py-3">Bedrijf</th>
                                     <th class="px-4 py-3">Product</th>
@@ -101,14 +99,14 @@
                                     @endphp
                                     <tr class="transition-colors hover:bg-zinc-50">
                                         <td class="px-4 py-3">
-                                            <div class="font-medium text-zinc-900">{{ $maintenance->Title ?? '—' }}</div>
-                                            <p class="text-xs text-zinc-500 line-clamp-1">{{ $maintenance->Content }}</p>
+                                            <div class="font-medium text-white-900">{{ $maintenance->Title ?? '—' }}</div>
+                                            <p class="text-xs text-zinc-100 line-clamp-1">{{ $maintenance->Content }}</p>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <span class="text-zinc-700">#{{ $maintenance->Company ?? '—' }}</span>
+                                            <span class="text-zinc-300">#{{ $maintenance->Company ?? '—' }}</span>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <span class="text-zinc-700">{{ $maintenance->Product ?? '—' }}</span>
+                                            <span class="text-zinc-300">{{ $maintenance->Product ?? '—' }}</span>
                                         </td>
                                         <td class="px-4 py-3">
                                             {{ $maintenance->Date ? \Illuminate\Support\Carbon::parse($maintenance->Date)->format('d-m-Y') : '—' }}
@@ -131,7 +129,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-4 py-6 text-center text-zinc-500">
+                                        <td colspan="7" class="px-4 py-6 text-center text-zinc-100">
                                             Er zijn nog geen onderhoudstaken gevonden.
                                         </td>
                                     </tr>
