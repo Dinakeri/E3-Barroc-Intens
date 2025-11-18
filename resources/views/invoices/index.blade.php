@@ -1,9 +1,10 @@
 <x-layouts.dashboard title="Opgeslagen facturen">
     <h1 class="text-2xl font-bold mb-4">Opgeslagen facturen</h1>
 
-    <div class="mb-4">
-        <a href="{{ route('invoices.create') }}" class="px-3 py-2 bg-green-600 text-white rounded">Maak factuur</a>
-    </div>
+    @section('title', 'Financien Dashboard')
+    @section('sidebar')
+        @include('partials.FinanceSidebar')
+    @endsection
 
     @if($invoices->count())
         <div class="overflow-x-auto">

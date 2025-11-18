@@ -14,6 +14,14 @@ class Invoice extends Model
         'pdf_path',
     ];
 
+    /**
+     * Cast invoice date fields to Carbon instances.
+     */
+    protected $casts = [
+        'invoice_date' => 'date',
+        'due_date' => 'date',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

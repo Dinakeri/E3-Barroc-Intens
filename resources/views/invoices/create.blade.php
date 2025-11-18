@@ -1,4 +1,8 @@
 <x-layouts.dashboard title="Nieuwe factuur">
+    @section('title', 'Financien Dashboard')
+    @section('sidebar')
+        @include('partials.FinanceSidebar')
+    @endsection
     <div class="mb-6">
         <label class="block font-medium mb-2">Kies klant</label>
         <select id="customer_select" class="w-full border rounded px-2 py-1 bg-neutral-900 text-white dark:bg-neutral-900 dark:text-white">
