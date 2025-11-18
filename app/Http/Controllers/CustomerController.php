@@ -35,11 +35,12 @@ class CustomerController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers,email',
             'phone' => 'nullable|string|max:20',
-            'plaats' => 'nullable|string',
-            'huisnummer' => 'nullable|integer',
+            'contact_person' => 'nullable|string',
+            'place' => 'nullable|string',
+            'house_number' => 'nullable|integer',
             'postcode' => 'nullable|string',
-            'straat' => 'nullable|string',
-            'kvk_nummer' => 'nullable|integer',
+            'street' => 'nullable|string',
+            'kvk_number' => 'nullable|integer',
             'status' => 'nullable|in:new,active,pending,inactive',
             'notes' => 'nullable|string',
         ]);
@@ -52,9 +53,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Customer $customer_id)
     {
-        //
+        $customer = Customer::findOrFail($customer_id);
+        return view('customers.show', compact('customer'));
     }
 
     /**

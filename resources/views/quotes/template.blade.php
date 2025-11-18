@@ -107,7 +107,7 @@
                         <th>Total</th>
                     </tr>
                 </thead>
-                {{-- <tbody>
+                <tbody>
                     @foreach ($quote->items as $item)
                         <tr>
                             <td>{{ $item->description }}</td>
@@ -120,7 +120,7 @@
                         <td colspan="3" class="total">Total:</td>
                         <td>€{{ number_format($quote->total_price, 2) }}</td>
                     </tr>
-                </tbody> --}}
+                </tbody>
             </table>
         </div>
 

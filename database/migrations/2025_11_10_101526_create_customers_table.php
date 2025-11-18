@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->nullable();
-            $table->text('straat')->nullable();
-            $table->text('huisnummer')->nullable();
+            $table->string('contact_person');
+            $table->text('street')->nullable();
+            $table->text('house_number')->nullable();
             $table->text('postcode')->nullable();
-            $table->text('plaats')->nullable();
-            $table->integer('kvk_nummer')->nullable();
+            $table->text('place')->nullable();
+            $table->integer('kvk_number')->nullable();
             $table->enum('status', ['new', 'active', 'pending', 'inactive'])->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

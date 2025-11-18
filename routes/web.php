@@ -32,7 +32,8 @@ Route::middleware(['auth'])->group(function () {
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-    Route::view('customers.create', 'customers.create')->name('customers.create');
+    Route::view('customers/create', 'customers.create')->name('customers.create');
+    Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 
     Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');

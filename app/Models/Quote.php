@@ -15,6 +15,7 @@ class Quote extends Model
         'price',
         'product',
         'status',
+        'url',
     ];
 
     public function customer() {

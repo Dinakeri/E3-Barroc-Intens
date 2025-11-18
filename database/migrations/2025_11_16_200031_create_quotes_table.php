@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('product')->nullable();
             $table->integer('price');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('url')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
