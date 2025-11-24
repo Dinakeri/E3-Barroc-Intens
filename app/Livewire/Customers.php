@@ -14,12 +14,14 @@ class Customers extends Component
     public bool $showModal = false;
     public string $search = "";
     public string $status = "";
+    public bool $onlyWithPdf = false;
     public string $sortField = "created_at";
     public string $sortDirection = "asc";
 
     protected $queryString = [
         'search' => ['except' => ''],
         'status' => ['except' => ''],
+        'onlyWithPdf' => ['except' => false],
         'sortField' => ['except' => 'created_at'],
         'sortDirection' => ['except' => 'asc'],
     ];
@@ -60,6 +62,11 @@ class Customers extends Component
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('phone', 'like', '%' . $this->search . '%')
                     ->orWhere('plaats', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->onlyWithPdf, function ($query) {
+                $query->whereHas('quote', function ($q) {
+                    $q->whereNotNull('url');
+                });
             })
             ->when($this->status, function ($query) {
                 $query->where('status', $this->status);

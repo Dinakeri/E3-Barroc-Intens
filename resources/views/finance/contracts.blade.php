@@ -3,28 +3,19 @@
     @section('sidebar')
         @include('partials.FinanceSidebar')
     @endsection
-    <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Financien Dashboard</h1>
-        <p>Welcome bij het Financien Dashboard. hier kan je een overzicht vinden van de financiële statistieken en prestaties.</p>
-    </div>
-
-    @section('sidebar')
-        <flux:navlist class="w-64">
-            <flux:navlist.item href="#" class="mb-4" icon="home">Home</flux:navlist.item>
-            <flux:navlist.item href="{{ route('dashboards.contracts') }}" class="mb-4" icon="building-storefront">Contracten</flux:navlist.item>
-            <flux:navlist.item href="{{ route('dashboards.invoices') }}" class="mb-4" icon="building-storefront">Facturen</flux:navlist.item>
-            <flux:navlist.item href="" class="mb-4" icon="building-storefront">Betalingen</flux:navlist.item>
-            <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <flux:navlist.item href="#" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Logout</flux:navlist.item>
-
-        </flux:navlist>
-    @endsection
 
     <div class="contracts">
         <h2 class="text-2xl font-bold mb-4">Actieve Contracten</h2>
 
+        <div class="mb-6">
+            <h3 class="text-xl font-semibold mb-2">Klanten met offerte (PDF)</h3>
+            @livewire('customers', ['onlyWithPdf' => true])
+        </div>
+
         @php
-            $contracts = \App\Models\Contract::orderBy('created_at', 'desc')->get();
+            // Expect contracts and customers to be passed from the route. Fall back to simple queries
+            $contracts = $contracts ?? \App\Models\Contract::orderBy('created_at', 'desc')->get();
+            $customers = $customers ?? collect();
         @endphp
 
         @if ($contracts->isEmpty())
@@ -36,6 +27,18 @@
                         <div class="font-semibold">{{ $contract->customer }}</div>
                         <div class="text-sm text-gray-600">{{ $contract->products }}</div>
                         <div class="text-xs text-gray-500">{{ $contract->created_at->format('Y-m-d') }}</div>
+
+                        @php
+                            $linkedCustomer = $customers->get($contract->customer) ?? null;
+                        @endphp
+
+                        @if ($linkedCustomer && $linkedCustomer->quote && $linkedCustomer->quote->url)
+                            <div class="mt-2">
+                                <a href="{{ $linkedCustomer->quote->url }}" target="_blank" class="text-blue-500 hover:underline">Bekijk offerte</a>
+                            </div>
+                        @else
+                            <div class="mt-2 text-sm text-gray-500">Geen offerte beschikbaar</div>
+                        @endif
                     </li>
                 @endforeach
             </ul>
