@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('house_number')->nullable();
             $table->text('postcode')->nullable();
             $table->text('place')->nullable();
+            $table->enum('bkr_status', ['pending', 'registered', 'cleared'])->nullable()->default('pending');
             $table->integer('kvk_number')->nullable();
             $table->enum('status', ['new', 'active', 'pending', 'inactive'])->nullable();
             $table->text('notes')->nullable();
