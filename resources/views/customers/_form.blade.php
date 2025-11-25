@@ -74,7 +74,7 @@
 
 
     <flux:field variant="block" class="mb-6">
-        <flux:textarea label="Aanvullende opmerkingen" placeholder="Aanvullende opmerkingen over klant..."
+        <flux:textarea label="Aanvullende opmerkingen" placeholder="Aanvullende opmerkingen over klant..." name="notes"
             value="{{ old('notes', $customer->notes ?? '') }}" />
     </flux:field>
 

@@ -88,40 +88,66 @@
 
         <div class="customer-info">
             <h2>Customer Information</h2>
-            <p><strong>Name:</strong> {{ $customer->name }}</p>
+            <p><strong>Naam:</strong> {{ $customer->name }}</p>
             <p><strong>Email:</strong> {{ $customer->email }}</p>
-            <p><strong>Phone:</strong> {{ $customer->phone ?? '-' }}</p>
-            <p><strong>Address:</strong>
+            <p><strong>Telefoonummer:</strong> {{ $customer->phone ?? '-' }}</p>
+            <p><strong>Adres:</strong>
                 {{ trim(($customer->straat ?? '') . ' ' . ($customer->huisnummer ?? '') . ', ' . ($customer->plaats ?? '')) }}
             </p>
         </div>
 
         <div class="quote-info">
-            <h2>Quote Details</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                {{-- <tbody>
-                    @foreach ($quote->items as $item)
-                        <tr>
-                            <td>{{ $item->description }}</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>€{{ number_format($item->unit_price, 2) }}</td>
-                            <td>€{{ number_format($item->quantity * $item->unit_price, 2) }}</td>
-                        </tr>
-                    @endforeach
-                    <tr>
-                        <td colspan="3" class="total">Total:</td>
-                        <td>€{{ number_format($quote->total_price, 2) }}</td>
-                    </tr>
-                </tbody> --}}
-            </table>
+            <h2>Offerte Details</h2>
+            <div class="rounded-xl border border-zinc-200 p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-zinc-200 dark:border-zinc-200">
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">ID
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
+                                    Product</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
+                                    Hoeveelheid</th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
+                                    Prijs
+                                </th>
+                                <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                            @if ($customer->orders)
+                                @forelse ($customer->orders as $order)
+                                    @foreach ($order->orderItems as $item)
+                                        <tr
+                                            class="hover:bg-zinc-400 dark:hover:bg-zinc-800 hover:cursor-pointer transition-colors">
+                                            <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->id }}
+                                            </td>
+                                            <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">
+                                                {{ ucfirst($item->product->name) }}</td>
+                                            <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->quantity }}
+                                            </td>
+                                            <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">
+                                                €{{ number_format($item->price, 2) }}</td>
+                                            <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->status }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="4"
+                                            class="px-4 py-3 text-zinc-900 dark:text-zinc-200 text-center">
+                                            Geen bestellingen gevonden.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            @endif
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <footer>

@@ -2,25 +2,31 @@
     <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading>Customers</flux:heading>
-                <flux:subheading>Manage and filter through your customer database</flux:subheading>
+                <flux:heading>Klanten</flux:heading>
+                <flux:subheading>Beheer en filter uw klantendatabase</flux:subheading>
             </div>
         </div>
 
         <!-- Filters -->
         <div class="rounded-xl border border-zinc-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 p-6">
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div class="lg:col-span-2">
-                    <flux:input wire:model.live.debounce.300ms="search" placeholder="Search by name, email, or address..."
-                        icon="magnifying-glass" />
+                    <flux:input wire:model.live.debounce.300ms="search"
+                        placeholder="Zoeken op naam, e-mailadres of adres..." icon="magnifying-glass" />
                 </div>
 
                 <flux:select wire:model.live="status" placeholder="Status">
-                    <option value="">New</option>
-                    <option value="active">Active</option>
-                    <option value="pending">Pending</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="">Alle</option>
+                    <option value="new">Nieuw</option>
+                    <option value="active">Actief</option>
+                    <option value="pending">In behandeling</option>
+                    <option value="inactive">Inactief</option>
                 </flux:select>
+
+                <div class="ml-auto">
+                    <flux:button variant="primary" color="blue" icon:trailing="plus"
+                        href="{{ route('customers.create') }}">Voeg nieuwe klant toe</flux:button>
+                </div>
             </div>
             @if ($search || $status)
                 <div class="mt-4">
@@ -64,7 +70,7 @@
                     </thead>
                     <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
                         @forelse($customers as $customer)
-                            <tr onclick="window.location='{{ route('customers.show', $customer->id) }}'"
+                            <tr onclick="window.location='{{ route('customers.show', $customer) }}'"
                                 class="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
 
                                 <td class="px-4 py-3">
@@ -102,7 +108,8 @@
                                         @if ($customer->quote)
                                             @if ($customer->quote->url)
                                                 <flux:button href="{{ $customer->quote->url }}" variant="ghost"
-                                                    target="_blank" icon:trailing="arrow-up-right">
+                                                    target="_blank" icon:trailing="arrow-up-right"
+                                                    onclick="event.stopPropagation();">
                                                     Open PDF
                                                 </flux:button>
                                             @else
@@ -123,16 +130,16 @@
                                 </td>
 
                                 <td class="px-4 py-3">
-                                    <flux:button wire:click.stop="showCustomerDetails({{ $customer }})" variant="ghost"
-                                        size="sm">
-                                        View Details
+                                    <flux:button wire:click.stop="showCustomerDetails({{ $customer }})"
+                                        variant="ghost" size="sm">
+                                        Bekijk Details
                                     </flux:button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="6" class="px-4 py-8 text-center text-zinc-500 dark:text-zinc-400">
-                                    No customers found.
+                                    Geen klanten gevonden.
                                 </td>
                             </tr>
                         @endforelse
@@ -149,17 +156,21 @@
     @if ($selectedCustomer)
         <flux:modal name="customer-details" wire:model="showModal" class="max-w-2xl">
             <div>
-                <flux:heading size="lg">Customer Details</flux:heading>
-                <flux:subheading>View complete information about this customer</flux:subheading>
+                <flux:heading size="lg">Details bedrijf</flux:heading>
+                <flux:subheading>Bekijk volledige informatie over deze klant.</flux:subheading>
             </div>
 
             <div class="space-y-4 mt-6">
                 <div class="grid gap-4 sm:grid-cols-2">
 
+                    <div>
+                        <flux:label>Naam</flux:label>
+                        <div class="mt-1 text-sm font-medium">{{ $selectedCustomer->name }}</div>
+                    </div>
 
                     <div>
-                        <flux:label>Name</flux:label>
-                        <div class="mt-1 text-sm font-medium">{{ $selectedCustomer->name }}</div>
+                        <flux:label>Contactpersoon bedrijf</flux:label>
+                        <div class="mt-1 text-sm font-medium">{{ $selectedCustomer->contact_person }}</div>
                     </div>
 
                     <div>
@@ -168,15 +179,40 @@
                     </div>
 
                     <div>
-                        <flux:label>Phone</flux:label>
+                        <flux:label>Telefoonnummer</flux:label>
                         <div class="mt-1 text-sm">{{ $selectedCustomer->phone ?? '-' }}</div>
                     </div>
 
                     <div>
-                        <flux:label>Address</flux:label>
+                        <flux:label>Adres</flux:label>
                         <div class="mt-1 text-sm">
                             {{ trim(($selectedCustomer->street ?? '') . ' ' . ($selectedCustomer->house_number ?? '') . ', ' . ($selectedCustomer->place ?? '')) }}
                         </div>
+                    </div>
+
+                    <div>
+                        <flux:label>BKR-status</flux:label>
+                        <div class="mt-1">
+
+                            <td class="px-4 py-3">
+                                @if ($selectedCustomer->bkr_status === 'pending')
+                                    <flux:badge color="zinc" icon="clock">
+                                        {{ ucfirst($selectedCustomer->bkr_status) }}
+                                    </flux:badge>
+                                @elseif ($selectedCustomer->bkr_status === 'cleared')
+                                    <flux:badge color="green" icon="check-circle">
+                                        {{ ucfirst($selectedCustomer->bkr_status) }}
+                                    </flux:badge>
+                                @elseif ($selectedCustomer->status === 'registered')
+                                    <flux:badge color="red" icon="x-circle">
+                                        {{ ucfirst($selectedCustomer->bkr_status) }}
+                                    </flux:badge>
+                                @else
+                                    <div class="text-sm text-zinc-900 dark:text-zinc-100">-</div>
+                                @endif
+                            </td>
+                        </div>
+
                     </div>
 
                     <div>
@@ -215,7 +251,7 @@
 
                 @if ($selectedCustomer->notes)
                     <div>
-                        <flux:label>Notes</flux:label>
+                        <flux:label>Notities</flux:label>
                         <div class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                             {{ $selectedCustomer->notes }}</div>
                     </div>
