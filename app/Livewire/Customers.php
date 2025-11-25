@@ -59,6 +59,7 @@ class Customers extends Component
         $customers = Customer::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('contact_person', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('phone', 'like', '%' . $this->search . '%')
                     ->orWhere('plaats', 'like', '%' . $this->search . '%');
