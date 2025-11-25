@@ -15,7 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->integer('price');
+            $table->decimal('cost_price');
+            $table->decimal('sales_price');
+            $table->text('description');
+            $table->integer('stock');
+            $table->enum('status', ['active', 'phased_out']);
+            $table->integer('length');
+            $table->integer('width');
+            $table->integer('breadth');
+            $table->decimal('weight');
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
