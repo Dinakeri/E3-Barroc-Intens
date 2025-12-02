@@ -1,9 +1,14 @@
 <x-layouts.dashboard>
     @section('title', 'Sales Dashboard')
-    <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Add New Customer</h1>
-        {{-- <p>Welcome to the Sales Dashboard. Here you can find an overview of sales metrics and performance.</p> --}}
+    <div class="flex justify-between">
+        <div>
+            <h1 class="text-3xl font-bold mb-6 text-left">Add New Customer</h1>
+        </div>
+        <div class="">
+            <flux:button variant="primary" color="blue" icon="chevron-left" class="ml-auto">Back</flux:button>
+        </div>
     </div>
+
 
 
     @section('sidebar')
@@ -11,7 +16,8 @@
             <flux:navlist.item href="{{ route('dashboards.sales') }}" class="mb-4" icon="home">Home</flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="building-storefront">Orders</flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="currency-dollar">Products</flux:navlist.item>
-            <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Customers</flux:navlist.item>
+            <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Customers
+            </flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Reports</flux:navlist.item>
             <flux:navlist.item href="" class="mb-4" icon="cog">Settings</flux:navlist.item>
             <flux:navlist.item href="{{ route('customers.create') }}" class="mb-4" icon="plus">Add new customer

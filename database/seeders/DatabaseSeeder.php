@@ -19,5 +19,8 @@ class DatabaseSeeder extends Seeder
         // Create deterministic test users for each department/role
         $this->call(TestUsersSeeder::class);
         $this->call(CustomersSeeder::class);
+        $this->call(OrdersSeeder::class);
+        $this->call(ProdcutsSeeder::class);
+        $this->call(OrderItemsSeeder::class);
     }
 }

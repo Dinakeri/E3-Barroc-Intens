@@ -25,6 +25,7 @@ class CustomerFactory extends Factory
             'house_number' => fake()->buildingNumber(),
             'postcode' => fake()->postcode(),
             'place' => fake()->city(),
+            'bkr_status' => fake()->randomElement(['pending', 'registered', 'cleared']),
             'kvk_number' => fake()->numberBetween(10000000, 99999999),
             'status' => fake()->randomElement(['new', 'active', 'pending', 'inactive']),
             'notes' => fake()->paragraph(),

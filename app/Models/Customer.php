@@ -19,6 +19,7 @@ class Customer extends Model
         'house_number',
         'postcode',
         'place',
+        'bkr_status',
         'kvk_number',
         'status',
         'notes',
@@ -26,6 +27,10 @@ class Customer extends Model
 
     public function quote() {
         return $this->hasOne(Quote::class);
+    }
+
+    public function orders() {
+    return $this->hasMany(Order::class);
     }
 
 }
