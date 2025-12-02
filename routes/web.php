@@ -39,7 +39,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboards.invoices');
 // end finance
 
-    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+// start maintenance
+    Route::get('dashboards.maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('maintenance.repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
+// end maintenance
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::view('customers/create', 'customers.create')->name('customers.create');

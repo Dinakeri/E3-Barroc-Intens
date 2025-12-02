@@ -9,7 +9,7 @@
 
         <div class="mb-6">
             <h3 class="text-xl font-semibold mb-2">Klanten met offerte (PDF)</h3>
-            @livewire('customers', ['onlyWithPdf' => true])
+            @livewire('invoice-customers', ['onlyWithPdf' => true])
         </div>
 
         @php
