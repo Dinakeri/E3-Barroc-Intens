@@ -44,6 +44,7 @@ class CustomerController extends Controller
             'status' => 'nullable|in:new,active,pending,inactive',
             'notes' => 'nullable|string',
         ]);
+        // dd($validated);
         Customer::create($validated);
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
 
@@ -53,10 +54,11 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Customer $customer_id)
+    public function show(Customer $customer)
     {
-        $customer = Customer::findOrFail($customer_id);
+        // $customer = Customer::findOrFail($customer_id);
         return view('customers.show', compact('customer'));
+
     }
 
     /**

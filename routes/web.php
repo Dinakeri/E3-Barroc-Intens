@@ -19,7 +19,15 @@ Route::middleware(['auth'])->group(function () {
 // start finance
 
     Route::view('dashboards.finance', 'dashboards.finance')->name('dashboards.finance');
-    Route::view('dashboards.contracts', 'finance.contracts')->name('dashboards.contracts');
+    Route::get('dashboards.contracts', function () {
+        $contracts = \App\Models\Contract::orderBy('created_at', 'desc')->get();
+
+        // Preload any customers that match contract.customer by name and their quote
+        $names = $contracts->pluck('customer')->filter()->unique()->values();
+        $customers = \App\Models\Customer::whereIn('name', $names)->with('quote')->get()->keyBy('name');
+
+        return view('finance.contracts', compact('contracts', 'customers'));
+    })->name('dashboards.contracts');
     Route::get('invoices/create', [\App\Http\Controllers\InvoiceController::class, 'create'])->name('invoices.create');
     Route::post('invoices', [\App\Http\Controllers\InvoiceController::class, 'store'])->name('invoices.store');
     Route::get('invoices', [\App\Http\Controllers\InvoiceController::class, 'index'])->name('invoices.index');
@@ -31,7 +39,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboards.invoices');
 // end finance
 
-    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+// start maintenance
+    Route::get('dashboards.maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('maintenance.repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
+// end maintenance
     Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::view('customers/create', 'customers.create')->name('customers.create');

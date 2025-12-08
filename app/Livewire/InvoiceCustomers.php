@@ -6,7 +6,7 @@ use App\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Customers extends Component
+class InvoiceCustomers extends Component
 {
     use WithPagination;
 
@@ -59,7 +59,6 @@ class Customers extends Component
         $customers = Customer::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('contact_person', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%')
                     ->orWhere('phone', 'like', '%' . $this->search . '%')
                     ->orWhere('plaats', 'like', '%' . $this->search . '%');
@@ -75,10 +74,8 @@ class Customers extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate(10);
 
-        $statuses = Customer::select('status')->distinct()->pluck('status');
-        return view('livewire.customers', [
+        return view('livewire.invoice-customers', [
             'customers' => $customers,
-            'statuses' => $statuses,
         ]);
     }
 

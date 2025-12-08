@@ -5,10 +5,10 @@
     </div>
     @section('sidebar')
         <flux:navlist class="w-64">
-            <flux:navlist.item href="#" class="mb-4" icon="home">Home</flux:navlist.item>
+            <flux:navlist.item href="{{ route('dashboards.maintenance') }}" class="mb-4" icon="home">Home</flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="wrench-screwdriver">Installaties</flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="wrench">Onderhoud</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="bolt">Storingen</flux:navlist.item>
+            <flux:navlist.item href="{{ route('maintenance.repairs') }}" class="mb-4" icon="bolt">Storingen</flux:navlist.item>
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
             <flux:navlist.item href="#" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Uitloggen</flux:navlist.item>
         </flux:navlist>

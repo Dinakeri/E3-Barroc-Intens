@@ -75,7 +75,7 @@ class InvoiceController extends Controller
 
         return response($output, 200)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="invoice-' . $invoice->id . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="invoice-' . $invoice->id . '.pdf"');
     }
 
     public function downloadPdf(Invoice $invoice)
