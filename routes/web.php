@@ -40,6 +40,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
 
+// start sales
+    Route::view('sales/products' , 'sales/products');
+// end sales
+
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
     Volt::route('settings/appearance', 'settings.appearance')->name('appearance.edit');
