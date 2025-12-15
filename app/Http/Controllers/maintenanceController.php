@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Models\Installation;
 use App\Models\Maintenance;
 use App\Models\Fault;
@@ -63,14 +64,26 @@ class maintenanceController extends Controller
             $emails = collect();
             foreach ($messages as $m) {
                 $emails->push([
-                    'id' => $m->getUid(),
-                    'subject' => $m->getSubject(),
+                    'id' => (string)$m->getUid(),
+                    'subject' => (string)$m->getSubject(),
                     'from' => optional($m->getFrom()[0])->mail ?? '',
                     'from_name' => optional($m->getFrom()[0])->personal ?? '',
                     'date' => $m->getDate(),
                     'preview' => $m->getTextBody() ?: $m->getHtmlBody(),
                 ]);
             }
+
+                    // Check which emails are already scheduled
+                    $scheduled = Maintenance::whereNotNull('email_id')
+                        ->get(['email_id','Date']);
+                    $scheduledMap = [];
+                    foreach ($scheduled as $s) { $scheduledMap[$s->email_id] = $s->Date; }
+
+                    $emails = $emails->map(function($email) use ($scheduledMap) {
+                        $email['scheduled'] = array_key_exists($email['id'], $scheduledMap);
+                        $email['scheduled_at'] = $email['scheduled'] ? $scheduledMap[$email['id']] : null;
+                        return $email;
+                    });
         } catch (\Throwable $e) {
             $emails = null;
             $mailError = $e->getMessage();
@@ -103,5 +116,75 @@ class maintenanceController extends Controller
         }
 
         return view('maintenance.repairs', compact('emails', 'mailError'));
+    }
+    public function calendar()
+    {
+        $maintenances = Maintenance::all();
+        return view('maintenance.calendar', compact('maintenances'));
+    }
+
+    public function scheduleRepair(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'email_id' => 'required',
+                'from' => 'required|string',
+                'date' => 'required|date',
+                'time' => 'required',
+            ]);
+
+            // Get optional fields without validation
+            $subject = $request->input('subject', 'Reparatie');
+            $fromName = $request->input('from_name', '');
+            $notes = $request->input('notes', '');
+
+            // Ensure all values are strings
+            $subject = is_array($subject) ? implode(', ', $subject) : (string)$subject;
+            $fromName = is_array($fromName) ? implode(', ', $fromName) : (string)$fromName;
+            $notes = is_array($notes) ? implode(', ', $notes) : (string)$notes;
+            $from = is_array($validated['from']) ? implode(', ', $validated['from']) : (string)$validated['from'];
+
+            // Log the data being sent
+            Log::debug('Schedule repair data', [
+                'subject' => $subject,
+                'fromName' => $fromName,
+                'notes' => $notes,
+                'from' => $from,
+                'date' => $validated['date'],
+            ]);
+            // Check if this email is already scheduled
+            $maintenance = Maintenance::where('email_id', $validated['email_id'])->first();
+
+            if ($maintenance) {
+                // Update existing repair (reschedule)
+                $maintenance->update([
+                    'Title' => $subject,
+                    'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
+                    'Date' => (string)$validated['date'],
+                ]);
+                $message = 'Reparatie succesvol gewijzigd';
+            } else {
+                // Create new maintenance/repair record
+                $maintenance = Maintenance::create([
+                    'email_id' => $validated['email_id'],
+                    'Title' => $subject,
+                    'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
+                    'Date' => (string)$validated['date'],
+                ]);
+                $message = 'Reparatie succesvol ingepland';
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'id' => $maintenance->id
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Failed to schedule repair: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
