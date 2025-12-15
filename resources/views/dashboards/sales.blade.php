@@ -19,8 +19,7 @@
             </flux:navlist.item>
 
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <flux:navlist.item href="{{ route('logout') }}" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Logout
-            </flux:navlist.item>
+
 
         </flux:navlist>
     @endsection
@@ -57,7 +56,8 @@
         <div class="border-2 rounded-xl p-4 my-6">
             <flux:heading size="xl" class="mb-2">Offertes:</flux:heading>
             <flux:subheading size="xl" class="font-bold text-white mb-1">120</flux:subheading>
-            <flux:text icon="arrow-trending-down" color="red" class="text-sm font-bold">230 offertes nog niet aangevraagd
+            <flux:text icon="arrow-trending-down" color="red" class="text-sm font-bold">
+                230 offertes nog niet aangevraagd
             </flux:text>
         </div>
 
