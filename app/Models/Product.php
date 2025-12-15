@@ -22,7 +22,6 @@ class Product extends Model
         'width',
         'breadth',
         'weight',
-        'order_id',
     ];
 
     public function order() {

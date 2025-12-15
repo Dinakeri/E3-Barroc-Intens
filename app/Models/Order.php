@@ -20,11 +20,11 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function products() {
-        return $this->hasMany(Product::class);
-    }
-
     public function orderItems() {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function invoices() {
+        return $this->hasMany(Invoice::class);
     }
 }
