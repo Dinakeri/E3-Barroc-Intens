@@ -24,7 +24,7 @@
         </flux:navlist>
     @endsection
 
-    {{-- Assuming you have installed Flux UI and included @fluxAppearance & @fluxScripts in your layout. :contentReference[oaicite:1]{index=1} --}}
+
     <div class="min-h-screen p-6">
         <form action="route('customers.store')" method="POST">
             @csrf
