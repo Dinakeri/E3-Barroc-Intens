@@ -144,6 +144,9 @@ class maintenanceController extends Controller
             $notes = is_array($notes) ? implode(', ', $notes) : (string)$notes;
             $from = is_array($validated['from']) ? implode(', ', $validated['from']) : (string)$validated['from'];
 
+            // Build ISO datetime from date + time for calendar
+            $dateTime = sprintf('%sT%s:00', $validated['date'], $validated['time']);
+
             // Log the data being sent
             Log::debug('Schedule repair data', [
                 'subject' => $subject,
@@ -151,6 +154,8 @@ class maintenanceController extends Controller
                 'notes' => $notes,
                 'from' => $from,
                 'date' => $validated['date'],
+                'time' => $validated['time'],
+                'dateTime' => $dateTime,
             ]);
             // Check if this email is already scheduled
             $maintenance = Maintenance::where('email_id', $validated['email_id'])->first();
@@ -160,7 +165,7 @@ class maintenanceController extends Controller
                 $maintenance->update([
                     'Title' => $subject,
                     'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
-                    'Date' => (string)$validated['date'],
+                    'Date' => $dateTime,
                 ]);
                 $message = 'Reparatie succesvol gewijzigd';
             } else {
@@ -169,7 +174,7 @@ class maintenanceController extends Controller
                     'email_id' => $validated['email_id'],
                     'Title' => $subject,
                     'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
-                    'Date' => (string)$validated['date'],
+                    'Date' => $dateTime,
                 ]);
                 $message = 'Reparatie succesvol ingepland';
             }

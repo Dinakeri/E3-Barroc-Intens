@@ -7,6 +7,7 @@
             <flux:navlist.item href="#" class="mb-4" icon="wrench-screwdriver">Installaties</flux:navlist.item>
             <flux:navlist.item href="#" class="mb-4" icon="wrench">Onderhoud</flux:navlist.item>
             <flux:navlist.item href="{{ route('maintenance.repairs') }}" class="mb-4" icon="bolt">Storingen</flux:navlist.item>
+            <flux:navlist.item href="{{ route('dashboards.calendar') }}" class="mb-4" icon="calendar-days">Kalender</flux:navlist.item>
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
             <flux:navlist.item href="#" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Uitloggen</flux:navlist.item>
         </flux:navlist>
@@ -54,10 +55,56 @@
         .fc .fc-daygrid-day.fc-day-today {
             background: #1e293b;
         }
+        /* Modal z-index fix */
+        #eventModal {
+            z-index: 9999 !important;
+        }
+        #eventModal > div {
+            position: relative;
+            z-index: 10000;
+        }
     </style>
 
     <div>
         <h1 class="text-3xl font-bold mb-6 text-left text-white">Onderhoud Kalender</h1>
+    </div>
+
+    <!-- Event Detail Modal -->
+    <div id="eventModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-neutral-800 rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="eventTitle" class="text-xl font-bold text-white"></h2>
+                <button onclick="closeEventModal()" class="text-neutral-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-neutral-300 mb-1">Datum & Tijd</label>
+                    <div id="eventDateTime" class="text-white"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-300 mb-1">Klant</label>
+                    <div id="eventCustomer" class="text-white"></div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-300 mb-1">Notities</label>
+                    <div id="eventNotes" class="text-neutral-300 whitespace-pre-wrap"></div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button onclick="closeEventModal()"
+                            class="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition">
+                        Sluiten
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="mt-6">
@@ -94,6 +141,38 @@
                     },
                     @endforeach
                 ],
+                eventClick: function(info) {
+                    // Parse content to extract customer and notes
+                    const content = info.event.extendedProps.content || '';
+                    const lines = content.split('\n');
+                    let customer = '';
+                    let notes = '';
+
+                    if (lines[0] && lines[0].startsWith('Van: ')) {
+                        customer = lines[0].replace('Van: ', '');
+                        notes = lines.slice(2).join('\n').trim();
+                    } else {
+                        notes = content;
+                    }
+
+                    // Format date/time
+                    const dateTime = info.event.start.toLocaleString('nl-NL', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    // Populate modal
+                    document.getElementById('eventTitle').textContent = info.event.title;
+                    document.getElementById('eventDateTime').textContent = dateTime;
+                    document.getElementById('eventCustomer').textContent = customer || '(Onbekend)';
+                    document.getElementById('eventNotes').textContent = notes || '(Geen notities)';
+
+                    // Show modal
+                    document.getElementById('eventModal').classList.remove('hidden');
+                },
                 editable: true,
                 selectable: true,
                 selectMirror: true,
@@ -101,6 +180,17 @@
                 height: 'auto'
             });
             calendar.render();
+        });
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.add('hidden');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('eventModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEventModal();
+            }
         });
     </script>
 </x-layouts.dashboard>
