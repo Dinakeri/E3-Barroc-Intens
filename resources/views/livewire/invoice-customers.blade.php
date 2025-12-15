@@ -16,7 +16,8 @@
                 </div>
 
                 <flux:select wire:model.live="status" placeholder="Status">
-                    <option value="">New</option>
+                    <option value="">Alle</option>
+                    <option value="new">New</option>
                     <option value="active">Active</option>
                     <option value="pending">Pending</option>
                     <option value="inactive">Inactive</option>
