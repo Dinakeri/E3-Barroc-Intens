@@ -1,6 +1,4 @@
 <div class="w-full max-w-xl mx-auto lg:mx-0">
-    <h2 class="text-2xl font-bold mb-4">Nieuwe factuur aanmaken</h2>
-
     <div class="mb-4 p-4 border rounded bg-neutral-900">
         <p class="mb-2">Voer eerst de BKR-check uit voor deze klant. De klant mag niet in de BKR staan.</p>
         <div class="flex items-center gap-4">
