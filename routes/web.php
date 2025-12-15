@@ -47,14 +47,22 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     // end finance
 
+<<<<<<< Updated upstream
     // start maintenance
+    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('maintenance/repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
+    // end maintenance
+    Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');
+=======
+// start maintenance
     Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
     Route::get('maintenance/repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
     Route::post('maintenance/repairs/schedule', [App\Http\Controllers\maintenanceController::class, 'scheduleRepair'])->name('maintenance.repairs.schedule');
     Route::get('maintenance/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('maintenance.calendar');
     Route::get('dashboards/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('dashboards.calendar');
-        // end maintenance
-    Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');
+// end maintenance
+    Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
+>>>>>>> Stashed changes
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::view('customers/create', 'customers.create')->name('customers.create');
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
@@ -63,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
 
     // start sales
-    Route::view('sales/products', 'sales/products');
+    Route::view('sales/products', 'sales/products')->name('products');
     // end sales
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
