@@ -17,10 +17,10 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-// start finance
+    // start finance
 
-    Route::view('dashboards.finance', 'dashboards.finance')->name('dashboards.finance');
-    Route::get('dashboards/finance/contracts', function () {
+    Route::view('dashboards/finance', 'dashboards.finance')->name('dashboards.finance');
+    Route::get('dashboards/contracts', function () {
         $contracts = \App\Models\Contract::orderBy('created_at', 'desc')->get();
 
         // Preload any customers that match contract.customer by name and their quote
@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoices', [\App\Http\Controllers\InvoiceController::class, 'index'])->name('invoices.index');
     Route::get('invoices/{invoice}/pdf', [\App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
     Route::get('test-invoice', [\App\Http\Controllers\InvoiceController::class, 'testPdf'])->name('invoices.test');
-    Route::get('dashboards.invoices', function () {
+    Route::get('dashboards/invoices', function () {
         $customers = \App\Models\Customer::orderBy('name')->get();
         return view('finance.invoices', compact('customers'));
     })->name('dashboards.invoices');
@@ -45,19 +45,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
     Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
     Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
-// end finance
+    // end finance
 
-// start maintenance
-    Route::get('dashboards.maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
-    Route::get('maintenance.repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
-// end maintenance
-    Route::view('dashboards.sales', 'dashboards.sales')->name('dashboards.sales');
+    // start maintenance
+    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('maintenance/repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
+    // end maintenance
+    Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::view('customers/create', 'customers.create')->name('customers.create');
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 
     Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
+
+    // start sales
+    Route::view('sales/products', 'sales/products');
+    // end sales
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
