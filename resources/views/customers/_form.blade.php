@@ -8,8 +8,8 @@
 
     <flux:field variant="block" class="mb-4">
         <flux:label for="contact_person"> Contactspersoon</flux:label>
-        <flux:input id="contact_person" name="contact_person" type="contact_person" placeholder="John Doe" required class="w-full"
-            value="{{ old('contact_person', $customer->contact_person ?? '') }}" />
+        <flux:input id="contact_person" name="contact_person" type="contact_person" placeholder="John Doe" required
+            class="w-full" value="{{ old('contact_person', $customer->contact_person ?? '') }}" />
         <flux:error name="contact_person" />
     </flux:field>
 
@@ -72,10 +72,9 @@
     </flux:radio.group>
 
 
-
     <flux:field variant="block" class="mb-6">
-        <flux:textarea label="Aanvullende opmerkingen" placeholder="Aanvullende opmerkingen over klant..." name="notes"
-            value="{{ old('notes', $customer->notes ?? '') }}" />
+        <flux:textarea label="Aanvullende opmerkingen" placeholder="Aanvullende opmerkingen over klant..."
+            name="notes" value="{{ old('notes', $customer->notes ?? '') }}" />
     </flux:field>
 
 
