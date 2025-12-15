@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -19,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
 // start finance
 
     Route::view('dashboards.finance', 'dashboards.finance')->name('dashboards.finance');
-    Route::get('dashboards.contracts', function () {
+    Route::get('dashboards/finance/contracts', function () {
         $contracts = \App\Models\Contract::orderBy('created_at', 'desc')->get();
 
         // Preload any customers that match contract.customer by name and their quote
@@ -37,6 +38,13 @@ Route::middleware(['auth'])->group(function () {
         $customers = \App\Models\Customer::orderBy('name')->get();
         return view('finance.invoices', compact('customers'));
     })->name('dashboards.invoices');
+    // Payments
+    Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+    Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+    Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
 // end finance
 
 // start maintenance
