@@ -10,13 +10,18 @@
             <flux:navlist.item href="#" class="mb-4" icon="wrench">Onderhoud</flux:navlist.item>
             <flux:navlist.item href="{{ route('maintenance.repairs') }}" class="mb-4" icon="bolt">Storingen</flux:navlist.item>
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <flux:navlist.item href="#" class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Uitloggen</flux:navlist.item>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
+                    Uitloggen
+                </flux:navlist.item>
+            </form>
         </flux:navlist>
     @endsection
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
 
     <main>
-        <div class="text-white flex flex-col gap-6 items-start">
+        <div class="text-white flex flex-col gap-6 items-start overscroll-x-none">
             <div class="w-full flex gap-8 items-start">
                 <div class="flex flex-col gap-4 items-center">
                     <div>
