@@ -12,7 +12,7 @@
             </div>
 
             <!-- Navigation -->
-            <nav class="flex flex-col flex-grow mt-6 overflow-auto">
+            <nav class="flex flex-col flex-grow mt-6 overflow-hidden">
                 @yield('sidebar')
             </nav>
         </aside>
