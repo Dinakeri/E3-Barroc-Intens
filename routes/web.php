@@ -79,7 +79,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sales/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/sales/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::delete('/sales/orders/{order}', [OrderController::class, 'delete'])->name('orders.delete');
-
     // end sales
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
