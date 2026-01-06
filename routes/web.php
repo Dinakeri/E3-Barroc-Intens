@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         $customers = \App\Models\Customer::orderBy('name')->get();
         return view('finance.invoices', compact('customers'));
     })->name('dashboards.invoices');
+
     // Payments
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
