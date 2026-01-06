@@ -105,21 +105,29 @@
 
                                 <td class="px-4 py-3">
                                     <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
-                                        @if ($customer->quote)
-                                            @if ($customer->quote->url)
-                                                <flux:button href="{{ $customer->quote->url }}" variant="ghost"
-                                                    target="_blank" icon:trailing="arrow-up-right"
-                                                    onclick="event.stopPropagation();">
-                                                    Open PDF
-                                                </flux:button>
+                                        @if ($customer->bkr_status && $customer->bkr_status == 'cleared')
+                                            @if ($customer->quote)
+                                                @if ($customer->quote->url)
+                                                    <flux:button href="{{ $customer->quote->url }}" variant="ghost"
+                                                        target="_blank" icon:trailing="arrow-up-right"
+                                                        onclick="event.stopPropagation();">
+                                                        Open PDF
+                                                    </flux:button>
+                                                @else
+                                                    <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
+                                                @endif
                                             @else
-                                                <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
+                                                <flux:button wire:click.stop="generateQuote({{ $customer->id }})"
+                                                    variant="ghost" size="sm">
+                                                    Offerte genereren
+                                                </flux:button>
                                             @endif
+                                        @elseif ($customer->bkr_status && $customer->bkr_status == 'registered')
+                                            <div class="text-sm text-zinc-900 dark:text-zinc-100">Klant is geregistreerd
+                                                in BKR en heeft geen contract mogelijkheid!.</div>
                                         @else
-                                            <flux:button wire:click.stop="generateQuote({{ $customer->id }})"
-                                                variant="ghost" size="sm">
-                                                Offerte genereren
-                                            </flux:button>
+                                            <div class="text-sm text-zinc-900 dark:text-zinc-100">BKR check nog niet
+                                                uitgevoerd!</div>
                                         @endif
                                     </div>
                                 </td>
