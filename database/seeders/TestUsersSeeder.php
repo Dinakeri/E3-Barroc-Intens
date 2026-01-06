@@ -18,6 +18,7 @@ class TestUsersSeeder extends Seeder
             ['name' => 'Maintenance User', 'email' => 'maintenance@example.test', 'role' => 'maintenance'],
             ['name' => 'Sales User', 'email' => 'sales@example.test', 'role' => 'sales'],
             ['name' => 'No Role User', 'email' => 'none@example.test', 'role' => 'none'],
+            ['name' => 'Admin User', 'email' => 'admin@example.test', 'role' => 'admin'],
         ];
 
         foreach ($users as $u) {
