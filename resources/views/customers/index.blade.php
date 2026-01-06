@@ -3,7 +3,7 @@
     <div class="flex justify-between">
         <h1 class="text-3xl font-bold mb-6 text-left">Alle Klanten</h1>
         <div>
-            <flux:button icon="arrow-left" variant="ghost" href="{{ route('customers.index') }}">Terug</flux:button>
+            <flux:button icon="arrow-left" variant="ghost" href="{{ route('dashboards.sales') }}">Terug</flux:button>
         </div>
         {{-- <p>Welcome to the Sales Dashboard. Here you can find an overview of sales metrics and performance.</p> --}}
     </div>
