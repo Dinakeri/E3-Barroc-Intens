@@ -1,7 +1,7 @@
 <flux:navlist class="w-64">
     <flux:navlist.item href="{{ route('dashboards.sales') }}" class="mb-4" icon="home">Home</flux:navlist.item>
-    <flux:navlist.item href="#" class="mb-4" icon="building-storefront">Orders</flux:navlist.item>
-    <flux:navlist.item href="#" class="mb-4" icon="currency-dollar">Products</flux:navlist.item>
+    <flux:navlist.item href="{{ route('orders.index') }}" class="mb-4" icon="building-storefront">Orders</flux:navlist.item>
+    <flux:navlist.item href="{{ route('products') }}" class="mb-4" icon="currency-dollar">Products</flux:navlist.item>
     <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Customers
     </flux:navlist.item>
     <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Reports</flux:navlist.item>
