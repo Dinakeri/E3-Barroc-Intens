@@ -1,91 +1,203 @@
 <x-layouts.dashboard>
     @section('title', 'Sales Dashboard')
-    <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">{{ $customer->name }}</h1>
-        {{-- <p>Welcome to the Sales Dashboard. Here you can find an overview of sales metrics and performance.</p> --}}
-    </div>
-
 
     @section('sidebar')
         @include('partials.salesSidebar')
     @endsection
 
-    <div class="grid gap-4 lg:grid-cols-2 sm:grid-cols-1 mb-8">
-        <div class="mb-2">
-            <flux:heading size="lg">Bedrijfsnaam</flux:heading>
-            <flux:text size="lg">{{ $customer->name }}</flux:text>
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <flux:heading size="xl">{{ $customer->name }}</flux:heading>
+            <flux:text class="text-zinc-500">
+                Customer overview & order history
+            </flux:text>
         </div>
 
-        <div class="mb-2">
-            <flux:heading size="lg">Contact persoon</flux:heading>
-            <flux:text size="lg">{{ $customer->contact_person }}</flux:text>
-        </div>
-
-        <div class="mb-2">
-            <flux:heading size="lg">Email</flux:heading>
-            <flux:text size="lg">{{ $customer->email }}</flux:text>
-        </div>
-
-        <div class="mb-2">
-            <flux:heading size="lg">Telefoonnummer</flux:heading>
-            <flux:text size="lg">{{ $customer->phone }}</flux:text>
-        </div>
-
-        <div class="mb-2">
-            <flux:heading size="lg">Adres</flux:heading>
-            <flux:text size="lg">
-                {{ trim($customer->street . ' ' . $customer->house_number . ', ' . $customer->place) }}</flux:text>
+        <div class="flex items-center gap-6">
+            <flux:button href="{{ route('customers.index') }}" variant="primary" color="zinc" icon="arrow-left">Terug
+            </flux:button>
+            <flux:button href="{{ route('customers.edit', $customer) }}" variant="primary" color="blue"
+                icon="pencil-square">Bewerken</flux:button>
         </div>
 
     </div>
 
-    <div>
-        <flux:heading size="lg" class="mb-2">Bestellingen</flux:heading>
-        <div class="rounded-xl border border-zinc-200 p-6">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-zinc-200 dark:border-zinc-200">
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">ID
-                            </th>
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
-                                Product</th>
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
-                                Hoeveelheid</th>
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">Prijs
-                            </th>
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-200">
-                                Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
-                        @if ($customer->orders)
-                            @forelse ($customer->orders as $order)
-                                @foreach ($order->orderItems as $item)
-                                    <tr
-                                        class="hover:bg-zinc-400 dark:hover:bg-zinc-800 hover:cursor-pointer transition-colors">
-                                        <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->id }}</td>
-                                        <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">
-                                            {{ ucfirst($item->product->name) }}</td>
-                                        <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->quantity }}
-                                        </td>
-                                        <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">
-                                            €{{ number_format($item->price, 2) }}</td>
-                                        <td class="px-4 py-3 text-zinc-900 dark:text-zinc-200">{{ $item->status }}</td>
-                                    </tr>
-                                @endforeach
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-4 py-3 text-zinc-900 dark:text-zinc-200 text-center">
-                                        Geen bestellingen gevonden.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        @endif
+    {{-- Customer information --}}
+    <div class="p-6 mb-10">
+        <flux:heading size="lg" class="mb-4">Customer information</flux:heading>
 
-                    </tbody>
-                </table>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+                <flux:text class="text-sm text-zinc-500">Company</flux:text>
+                <flux:text class="font-medium">{{ $customer->name }}</flux:text>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">Contact person</flux:text>
+                <flux:text class="font-medium">{{ $customer->contact_person }}</flux:text>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">Email</flux:text>
+                <flux:text class="font-medium">{{ $customer->email }}</flux:text>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">Phone</flux:text>
+                <flux:text class="font-medium">{{ $customer->phone }}</flux:text>
+            </div>
+
+            <div class="sm:col-span-2">
+                <flux:text class="text-sm text-zinc-500">Address</flux:text>
+                <flux:text class="font-medium">
+                    {{ trim($customer->street . ' ' . $customer->house_number . ', ' . $customer->place) }}
+                </flux:text>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">KVK Number</flux:text>
+                <flux:text class="font-medium">{{ $customer->kvk_number }}</flux:text>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">BKR Status</flux:text>
+                <div class="mt-1">
+                    @if ($customer->bkr_status === 'cleared')
+                        <flux:badge variant="pill" color="green" icon="check-circle">Cleared</flux:badge>
+                    @else
+                        <flux:badge variant="pill" color="red" icon="x-circle">Registered</flux:badge>
+                    @endif
+                </div>
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">Status</flux:text>
+                @if ($customer->status === 'active')
+                    <flux:badge variant="pill" color="green" icon="check-circle" class="font-medium">Active
+                    </flux:badge>
+                @elseif ($customer->status === 'inactive')
+                    <flux:badge variant="pill" color="red" icon="x-circle   " class="font-medium">Inactive
+                    </flux:badge>
+                @else
+                    <flux:badge variant="pill" color="zinc" icon="clock" class="font-medium">New</flux:badge>
+                @endif
+            </div>
+
+            <div>
+                <flux:text class="text-sm text-zinc-500">Quote</flux:text>
+                @if ($customer->quote)
+                    @if ($customer->quote->url)
+                        <flux:button href="{{ $customer->quote->url }}" variant="primary" target="_blank"
+                            icon:trailing="arrow-up-right" onclick="event.stopPropagation();">
+                            Open PDF
+                        </flux:button>
+                    @else
+                        <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
+                    @endif
+                @endif
             </div>
         </div>
     </div>
-</x-layouts.dashboard>
+
+    {{-- Customer orders --}}
+    <div>
+        <flux:heading size="lg" class="mb-4">Orders</flux:heading>
+
+        <div>
+            @forelse ($customer->orders as $order)
+                <div class="mb-6 rounded-2xl border border-zinc-200 p-6 hover:cursor-pointer hover:bg-zinc-700 hover:bg-opacity-50 hover:text-white"
+                    onclick="window.location='{{ route('orders.show', $order) }}'">
+
+                    {{-- Order header --}}
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                        <div>
+                            <flux:text class="text-sm text-zinc-500">Order #{{ $order->id }}</flux:text>
+                            <flux:text class="font-medium">
+                                {{ $order->order_date }}
+                            </flux:text>
+                        </div>
+
+                        <span>
+                            @switch($order->status)
+                                @case('pending')
+                                    <flux:badge variant="pill" color="yellow" icon="clock">{{ ucfirst($order->status) }}
+                                    </flux:badge>
+                                @break
+
+                                @case('completed')
+                                    <flux:badge variant="pill" color="green" icon="check-circle">{{ ucfirst($order->status) }}
+                                    </flux:badge>
+                                @break
+
+                                @case('cancelled')
+                                    <flux:badge variant="pill" color="red" icon="x-circle">{{ ucfirst($order->status) }}
+                                    </flux:badge>
+                                @break
+
+                                @default
+                                    <flux:badge variant="pill">{{ ucfirst($order->status) }}</flux:badge>
+                            @endswitch
+                        </span>
+                    </div>
+
+                    {{-- Order items table --}}
+                    <div class="o   verflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-zinc-200 text-left text-zinc-500">
+                                    <th class="py-2">Product</th>
+                                    <th class="py-2">Quantity</th>
+                                    <th class="py-2">Price</th>
+                                    <th class="py-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-100">
+                                @foreach ($order->orderItems as $item)
+                                    <tr>
+                                        <td class="py-3 font-medium">
+                                            {{ ucfirst($item->product->name) }}
+                                        </td>
+                                        <td class="py-3">{{ $item->quantity }}</td>
+                                        <td class="py-3">
+                                            €{{ number_format($item->price, 2) }}
+                                        </td>
+                                        <td class="py-3 text-zinc-600">
+                                            @switch($item->status)
+                                                @case('pending')
+                                                    <span class="text-yellow-500">{{ ucfirst($item->status) }}</span>
+                                                @break
+
+                                                @case('completed')
+                                                    <span class="text-green-500">{{ ucfirst($item->status) }}</span>
+                                                @break
+
+                                                @case('cancelled')
+                                                    <span class="text-red-500">{{ ucfirst($item->status) }}</span>
+                                                @break
+
+                                                @default
+                                                    <span>{{ ucfirst($item->status) }}</span>
+                                            @endswitch
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Order total --}}
+                    <div class="flex justify-end mt-4">
+                        <flux:text class="font-semibold">
+                            Total: €{{ number_format($order->total_amount, 2) }}
+                        </flux:text>
+                    </div>
+                </div>
+                @empty
+                    <div class="rounded-xl border border-dashed border-zinc-300 p-8 text-center text-zinc-500">
+                        No orders found for this customer.
+                    </div>
+                @endforelse
+            </div>
+        </div>
+    </x-layouts.dashboard>
