@@ -22,6 +22,7 @@ class OrderFactory extends Factory
             'customer_id' => Customer::inRandomOrder()->first()->id ,
             'order_date' => $this->faker->date(),
             'total_amount' => $this->faker->randomFloat(2, 20, 1000),
+            'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
         ];
     }
 }
