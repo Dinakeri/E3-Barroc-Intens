@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,6 +22,7 @@ class InvoiceFactory extends Factory
         return [
             'customer_id' => Customer::inRandomOrder()->first()->id,
             'order_id' => Order::inRandomOrder()->first()->id,
+            'contract_id' => Contract::inRandomOrder()->first()->id,
             'total_amount' => $this->faker->randomFloat(2, 50, 5000),
             'invoice_date' => $this->faker->date(),
             'due_date' => $this->faker->date(),
