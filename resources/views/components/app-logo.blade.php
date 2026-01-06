@@ -1,6 +1,4 @@
-<div class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-    <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
-</div>
-<div class="ms-1 grid flex-1 text-start text-sm">
-    <span class="mb-0.5 truncate leading-tight font-semibold">Laravel Starter Kit</span>
-</div>
+<span class="inline-flex items-center gap-2">
+    <img src="/images/logo6_klein.png" alt="Barroc Intens Logo" class="h-10 w-auto">
+    <span class="text-xl font-bold text-neutral-900 dark:text-white tracking-wide">Barroc Intens.</span>
+</span>

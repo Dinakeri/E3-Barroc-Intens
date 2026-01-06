@@ -50,7 +50,7 @@
                                 <img src="{{ URL::asset('/images/products/barrocintens_aromatica_beans.png')}}" alt="Aromatica" class="h-[600px] mx-auto">
                             </product>
                             <product class="flex flex-col items-center gap-4" style="margin-top:45px">
-                                <img src="{{ URL::asset('/images/products/barrocintens_crema_beans.png')}}" alt="Espresso Roast" class="h-[600px] mx-auto">
+                                <img src="{{ URL::asset('/images/products/barrocintens_espresso_beans.png')}}" alt="Espresso Roast" class="h-[600px] mx-auto">
                             </product>
                         </div>
                     </imageCarousel>
@@ -63,9 +63,9 @@
             </div>
         </main>
         <footer class="row flex justify-between items-center">
-            <button data-carousel-toggle="machines-carousel" class="px-4 py-2 border border-zinc-400 rounded-full text-sm uppercase tracking-wide transition hover:bg-zinc-100 bg-white text-zinc-900">Onze koffiezetapparaten</button>
-            <a href="{{ route('dashboards.sales') }}" class="text-[#fdd716] hover:underline underline-offset-4">Terug naar sales overzicht</a>
-            <button data-carousel-toggle="beans-carousel" class="px-4 py-2 border border-zinc-400 rounded-full text-sm uppercase tracking-wide bg-zinc-900 text-white">Onze koffiebonen</button>
+            <button data-carousel-toggle="machines-carousel" class="cursor-pointer px-4 py-2 border border-zinc-400 rounded-full text-sm uppercase tracking-wide transition hover:bg-zinc-100 bg-white text-zinc-900">Onze koffiezetapparaten</button>
+            <a href="{{ route('dashboards.sales') }}" class="cursor-pointer text-[#fdd716] hover:underline underline-offset-4">Terug naar sales overzicht</a>
+            <button data-carousel-toggle="beans-carousel" class="cursor-pointer px-4 py-2 border border-zinc-400 rounded-full text-sm uppercase tracking-wide bg-zinc-900 text-white">Onze koffiebonen</button>
         </footer>
     </div>
 </body>

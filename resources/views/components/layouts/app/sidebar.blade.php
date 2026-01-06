@@ -12,22 +12,63 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
+                <flux:navlist.group :heading="__('Navigatie')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <flux:navlist.item as="button" type="submit" icon="arrow-left-end-on-rectangle" class="w-full text-left">
+                            {{ __('Log Uit') }}
+                        </flux:navlist.item>
+                    </form>
                 </flux:navlist.group>
+                @php
+                    $user = auth()->user();
+                @endphp
+
+                @if($user->role === 'maintenance' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Onderhoud')" class="grid">
+                        <flux:navlist.item icon="wrench-screwdriver" :href="route('dashboards.maintenance')" :current="request()->routeIs('dashboards.maintenance')" wire:navigate>
+                            {{ __('Onderhoud Home') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="wrench" :href="route('maintenance.calendar')" :current="request()->routeIs('maintenance.calendar')" wire:navigate>
+                            {{ __('Kalender') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="bolt" :href="route('maintenance.repairs')" :current="request()->routeIs('maintenance.repairs')" wire:navigate>
+                            {{ __('Storingen') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
+
+                @if($user->role === 'sales' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Sales')" class="grid">
+                        <flux:navlist.item icon="chart-bar" :href="route('dashboards.sales')" :current="request()->routeIs('dashboards.sales')" wire:navigate>
+                            {{ __('Sales Dashboard') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>
+                            {{ __('Klanten') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="shopping-cart" :href="route('products')" :current="request()->routeIs('products')" wire:navigate>
+                            {{ __('Bestellingen') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
+
+                @if($user->role === 'finance' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Finance')" class="grid">
+                        <flux:navlist.item icon="banknotes" :href="route('dashboards.finance')" :current="request()->routeIs('dashboards.finance')" wire:navigate>
+                            {{ __('Finance Dashboard') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="wallet" :href="route('dashboards.invoices')" :current="request()->routeIs('dashboards.invoices')" wire:navigate>
+                            {{ __('Facturen') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="receipt-percent" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>
+                            {{ __('Uitgaven') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
-            </flux:navlist>
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
@@ -118,9 +159,10 @@
 
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
+                        <button type="submit" class="w-full flex items-center gap-2 px-2 py-1 text-sm">
+                            <span class="i-lucide-arrow-right-start-on-rectangle"></span>
                             {{ __('Log Out') }}
-                        </flux:menu.item>
+                        </button>
                     </form>
                 </flux:menu>
             </flux:dropdown>
