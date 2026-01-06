@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('place')->nullable();
             $table->enum('bkr_status', ['pending', 'registered', 'cleared'])->nullable()->default('pending');
             $table->integer('kvk_number')->nullable();
-            $table->enum('status', ['new', 'active', 'pending', 'inactive'])->nullable();
+            $table->enum('status', ['new', 'active', 'inactive'])->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
