@@ -14,7 +14,7 @@
             <div class="flex gap-2">
                 <flux:button href="{{ route('payments.index') }}" variant="ghost" icon="arrow-left">Terug</flux:button>
                 <flux:button variant="primary" color="blue" href="{{ route('payments.edit', $payment) }}"
-                    variant="primary">
+                    variant="primary" icon="pencil-square">
                     Bewerk Betaling
                 </flux:button>
                 <flux:button href="{{ route('invoices.pdf', $payment->invoice) }}" icon:trailing="arrow-up-right"
