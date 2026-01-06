@@ -7,14 +7,65 @@
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            {{-- <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
-            </a> --}}
+            </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
+                <flux:navlist.group :heading="__('Navigatie')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <flux:navlist.item as="button" type="submit" icon="arrow-left-end-on-rectangle" class="w-full text-left">
+                            {{ __('Log Uit') }}
+                        </flux:navlist.item>
+                    </form>
                 </flux:navlist.group>
+                @php
+                    $user = auth()->user();
+                @endphp
+
+                @if($user->role === 'maintenance' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Onderhoud')" class="grid">
+                        <flux:navlist.item icon="wrench-screwdriver" :href="route('dashboards.maintenance')" :current="request()->routeIs('dashboards.maintenance')" wire:navigate>
+                            {{ __('Onderhoud Home') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="wrench" :href="route('maintenance.calendar')" :current="request()->routeIs('maintenance.calendar')" wire:navigate>
+                            {{ __('Kalender') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="bolt" :href="route('maintenance.repairs')" :current="request()->routeIs('maintenance.repairs')" wire:navigate>
+                            {{ __('Storingen') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
+
+                @if($user->role === 'sales' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Sales')" class="grid">
+                        <flux:navlist.item icon="chart-bar" :href="route('dashboards.sales')" :current="request()->routeIs('dashboards.sales')" wire:navigate>
+                            {{ __('Sales Dashboard') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="users" :href="route('customers.index')" :current="request()->routeIs('customers.*')" wire:navigate>
+                            {{ __('Klanten') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="shopping-cart" :href="route('products')" :current="request()->routeIs('products')" wire:navigate>
+                            {{ __('Bestellingen') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
+
+                @if($user->role === 'finance' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Finance')" class="grid">
+                        <flux:navlist.item icon="banknotes" :href="route('dashboards.finance')" :current="request()->routeIs('dashboards.finance')" wire:navigate>
+                            {{ __('Finance Dashboard') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="wallet" :href="route('dashboards.invoices')" :current="request()->routeIs('dashboards.invoices')" wire:navigate>
+                            {{ __('Facturen') }}
+                        </flux:navlist.item>
+                        <flux:navlist.item icon="receipt-percent" :href="route('payments.index')" :current="request()->routeIs('payments.*')" wire:navigate>
+                            {{ __('Uitgaven') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
