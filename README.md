@@ -24,6 +24,7 @@ Follow these steps to set up the project locally:
    - `DB_DATABASE` → name of the database you created
    - `DB_USERNAME` → `root` (default for local setups)
    - `DB_PASSWORD` → empty (default for local setups)
+8. remove gsap
  
 8. Open a terminal in the project directory and run the following commands **in order**:
  
@@ -41,6 +42,7 @@ If a command fails:
 1. Carefully read the error message
 2. Scroll up and focus on the main error (ignore long stack traces)
 3. Double-check the following in your .env file:
+4. is gsap removed?
 ```bash
 DB_DATABASE
  
