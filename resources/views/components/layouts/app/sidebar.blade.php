@@ -66,6 +66,14 @@
                         </flux:navlist.item>
                     </flux:navlist.group>
                 @endif
+
+                @if($user->role === 'purchasing' || $user->role === 'admin')
+                    <flux:navlist.group :heading="__('Inkoop')" class="grid">
+                        <flux:navlist.item icon="shopping-bag" :href="route('dashboards.purchasing')" :current="request()->routeIs('dashboards.purchasing')" wire:navigate>
+                            {{ __('Inkoop Dashboard') }}
+                        </flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
@@ -97,12 +105,6 @@
                                 </div>
                             </div>
                         </div>
-                    </flux:menu.radio.group>
-
-                    <flux:menu.separator />
-
-                    <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -151,12 +153,6 @@
 
                     <flux:menu.separator />
 
-                    <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
-                    </flux:menu.radio.group>
-
-                    <flux:menu.separator />
-
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-2 px-2 py-1 text-sm">
@@ -167,6 +163,17 @@
                 </flux:menu>
             </flux:dropdown>
         </flux:header>
+
+        @if(session('error'))
+            <div id="error-message" class="m-4 p-4 bg-red-600 border-2 border-red-800 text-white rounded-lg shadow-lg font-bold">
+                <div class="flex items-center justify-between">
+                    <span>{{ session('error') }}</span>
+                    <button onclick="document.getElementById('error-message').remove()" class="ml-4 text-white hover:text-red-200">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        @endif
 
         {{ $slot }}
 

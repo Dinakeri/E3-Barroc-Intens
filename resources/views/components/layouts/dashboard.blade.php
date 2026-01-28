@@ -19,6 +19,17 @@
     </header>
 
     <main class="flex-1 overflow-y-auto p-6 ml-72 text-black dark:text-white">
+        @if(session('error'))
+            <div id="error-message" class="mb-4 p-4 bg-red-600 border-2 border-red-800 text-white rounded-lg shadow-lg font-bold">
+                <div class="flex items-center justify-between">
+                    <span>{{ session('error') }}</span>
+                    <button onclick="document.getElementById('error-message').remove()" class="ml-4 text-white hover:text-red-200">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        @endif
+        
         {{ $slot }}
     </main>
 

@@ -1,21 +1,20 @@
 <x-layouts.dashboard>
-    @section('title', 'Sales Dashboard')
+    @section('title', 'Verkoopsdashboard')
     <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Sales Dashboard</h1>
-        <p>Welcome to the Sales Dashboard. Here you can find an overview of sales metrics and performance.</p>
+        <h1 class="text-3xl font-bold mb-6 text-left">Verkoopsdashboard</h1>
+        <p>Welkom op het Verkoopsdashboard. Hier vindt u een overzicht van verkoopsgegevens en prestaties.</p>
     </div>
 
 
     @section('sidebar')
         <flux:navlist class="w-64">
-            <flux:navlist.item href="{{ route('dashboards.sales') }}" class="mb-4" icon="home">Home</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="building-storefront">Orders</flux:navlist.item>
-            <flux:navlist.item href="{{ url('sales/products') }}" class="mb-4" icon="currency-dollar">Products</flux:navlist.item>
-            <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Customers
+            <flux:navlist.item href="{{ route('dashboards.sales') }}" class="mb-4" icon="home">Startpagina</flux:navlist.item>
+            <flux:navlist.item href="#" class="mb-4" icon="building-storefront">Bestellingen</flux:navlist.item>
+            <flux:navlist.item href="{{ url('sales/products') }}" class="mb-4" icon="currency-dollar">Producten</flux:navlist.item>
+            <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Klanten
             </flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Reports</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="cog">Settings</flux:navlist.item>
-            <flux:navlist.item href="{{ route('customers.create') }}" class="mb-4" icon="plus">Add new customer
+            <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Rapporten</flux:navlist.item>
+            <flux:navlist.item href="{{ route('customers.create') }}" class="mb-4" icon="plus">Nieuwe klant toevoegen
             </flux:navlist.item>
 
             <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
@@ -24,7 +23,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
-                    Log Out
+                    Afmelden
                 </flux:navlist.item>
             </form>
 
