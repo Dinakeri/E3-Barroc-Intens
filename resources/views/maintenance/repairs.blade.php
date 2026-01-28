@@ -1,23 +1,4 @@
-<x-layouts.dashboard>
-    @section('title', 'Onderhoud Dashboard')
-    <div>
-        <h1 class="text-3xl font-bold mb-6 text-left text-white">Onderhoud Dashboard</h1>
-    </div>
-    @section('sidebar')
-        <flux:navlist class="w-64 overscroll-x-none">
-            <flux:navlist.item href="{{ route('dashboards.maintenance') }}" class="mb-4" icon="home">Home</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="wrench-screwdriver">Installaties</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="wrench">Onderhoud</flux:navlist.item>
-            <flux:navlist.item href="{{ route('maintenance.repairs') }}" class="mb-4" icon="bolt">Storingen</flux:navlist.item>
-            <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
-                    Uitloggen
-                </flux:navlist.item>
-            </form>
-        </flux:navlist>
-    @endsection
+<x-layouts.app :title="__('Storingen')">
         <div class="mt-6">
             @if(isset($mailError) && $mailError)
                 <div class="p-3 mb-4 bg-red-100 text-red-800 rounded">Fout bij ophalen e-mails: {{ $mailError }}</div>
@@ -98,6 +79,17 @@
                                       placeholder="Extra informatie over de reparatie..."></textarea>
                         </div>
 
+                        <div>
+                            <label for="repairWorker" class="block text-sm font-medium text-neutral-300 mb-1">Toegewezen aan</label>
+                            <select id="repairWorker"
+                                    class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">-- Geen --</option>
+                                @foreach($workers as $worker)
+                                <option value="{{ $worker->id }}">{{ $worker->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="flex gap-3 mt-6">
                             <button onclick="savePlanRepair()"
                                     class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
@@ -138,6 +130,7 @@
                     const date = document.getElementById('repairDate').value;
                     const time = document.getElementById('repairTime').value;
                     const notes = document.getElementById('repairNotes').value;
+                    const assignedTo = document.getElementById('repairWorker').value;
 
                     if (!date || !time) {
                         alert('Vul een datum en tijd in');
@@ -162,6 +155,9 @@
                     }
                     if (notes) {
                         repairData.notes = notes;
+                    }
+                    if (assignedTo) {
+                        repairData.assigned_to = parseInt(assignedTo);
                     }
 
                     // Send to backend
