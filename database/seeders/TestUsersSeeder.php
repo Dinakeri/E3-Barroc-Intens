@@ -15,7 +15,12 @@ class TestUsersSeeder extends Seeder
     {
         $users = [
             ['name' => 'Finance User', 'email' => 'finance@example.test', 'role' => 'finance'],
-            ['name' => 'Maintenance User', 'email' => 'maintenance@example.test', 'role' => 'maintenance'],
+
+            // maintenance workers
+            ['name' => 'Dennis', 'email' => 'dennis@example.test', 'role' => 'maintenance'],
+            ['name' => 'Thijs', 'email' => 'thijs@example.test', 'role' => 'maintenance'],
+            ['name' => 'Lars', 'email' => 'lars@example.test', 'role' => 'maintenance'],
+
             ['name' => 'Sales User', 'email' => 'sales@example.test', 'role' => 'sales'],
             ['name' => 'No Role User', 'email' => 'none@example.test', 'role' => 'none'],
             ['name' => 'Admin User', 'email' => 'admin@example.test', 'role' => 'admin'],

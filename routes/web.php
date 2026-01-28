@@ -53,6 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('maintenance/repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
     Route::post('maintenance/repairs/schedule', [App\Http\Controllers\maintenanceController::class, 'scheduleRepair'])->name('maintenance.repairs.schedule');
     Route::get('maintenance/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('maintenance.calendar');
+    Route::get('dashboards/calendar/worker', [App\Http\Controllers\maintenanceController::class, 'workerCalendar'])->name('dashboards.calendar.worker');
     Route::get('dashboards/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('dashboards.calendar');
     // end maintenance
     Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');

@@ -30,9 +30,15 @@
                         <flux:navlist.item icon="wrench-screwdriver" :href="route('dashboards.maintenance')" :current="request()->routeIs('dashboards.maintenance')" wire:navigate>
                             {{ __('Onderhoud Home') }}
                         </flux:navlist.item>
-                        <flux:navlist.item icon="wrench" :href="route('maintenance.calendar')" :current="request()->routeIs('maintenance.calendar')" wire:navigate>
-                            {{ __('Kalender') }}
-                        </flux:navlist.item>
+                        @if($user->role === 'maintenance')
+                            <flux:navlist.item icon="calendar" :href="route('dashboards.calendar.worker')" :current="request()->routeIs('dashboards.calendar.worker')" wire:navigate>
+                                {{ __('Mijn Kalender') }}
+                            </flux:navlist.item>
+                        @else
+                            <flux:navlist.item icon="wrench" :href="route('dashboards.calendar')" :current="request()->routeIs('dashboards.calendar')" wire:navigate>
+                                {{ __('Kalender') }}
+                            </flux:navlist.item>
+                        @endif
                         <flux:navlist.item icon="bolt" :href="route('maintenance.repairs')" :current="request()->routeIs('maintenance.repairs')" wire:navigate>
                             {{ __('Storingen') }}
                         </flux:navlist.item>
