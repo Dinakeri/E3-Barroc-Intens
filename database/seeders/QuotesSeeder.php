@@ -13,6 +13,6 @@ class QuotesSeeder extends Seeder
      */
     public function run(): void
     {
-        Quote::factory()->count(50)->create();
+        Quote::factory()->count(5)->create();
     }
 }

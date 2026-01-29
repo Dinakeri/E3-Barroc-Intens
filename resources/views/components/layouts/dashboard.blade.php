@@ -19,8 +19,7 @@
         </aside>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-6 ml-72 text-black dark:text-white"
-        :class="openBkrDrawer ? 'pointer-events-none select-none blur-[1px]' : ''" class="transition">
+    <main class="flex-1 overflow-y-auto p-6 ml-72 text-black dark:text-white">
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition class="w-full mb-6">
                 <flux:callout variant="success">
@@ -38,7 +37,7 @@
                             ✕
                         </flux:button>
                     </div>
-                </flux:callou>
+                    </flux:callou>
             </div>
         @endif
 
@@ -68,11 +67,11 @@
 
     </main>
 
-    <!-- Overlay -->
+    <!-- BKR Drawer Overlay -->
     <div x-show="openBkrDrawer" x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
         @click="openBkrDrawer = false" x-cloak></div>
 
-    <!-- Drawer -->
+    <!-- BKR Drawer -->
     <div x-show="openBkrDrawer" x-transition
         class="fixed right-0 top-0 h-full w-[420px] bg-white dark:bg-zinc-900 shadow-xl z-50" x-cloak>
         <div class="p-6 border-b flex justify-between items-center">
@@ -84,7 +83,6 @@
             @include('bkr._drawer')
         </div>
     </div>
-
 
     @fluxScripts
 </body>

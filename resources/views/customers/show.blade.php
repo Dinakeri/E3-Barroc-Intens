@@ -83,17 +83,59 @@
                 @endif
             </div>
 
-            <div>
-                <flux:text class="text-sm text-zinc-500">Quote</flux:text>
-                @if ($customer->quote)
-                    @if ($customer->quote->url)
-                        <flux:button href="{{ $customer->quote->url }}" variant="primary" target="_blank"
-                            icon:trailing="arrow-up-right" onclick="event.stopPropagation();">
-                            Open PDF
-                        </flux:button>
-                    @else
-                        <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
-                    @endif
+            <div class="space-y-4">
+                <flux:heading size="sm" class="text-zinc-500 uppercase tracking-wide">
+                    Quotes
+                </flux:heading>
+
+                @if ($customer->quotes->count() > 0)
+                    @foreach ($customer->quotes as $quote)
+                        <div
+                            class="flex items-center justify-between rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4 shadow-sm">
+                            <div class="space-y-1">
+                                <flux:text class="font-medium">
+                                    Quote #{{ $quote->id }}
+                                </flux:text>
+
+                                @switch($quote->status)
+                                    @case('sent')
+                                        <flux:badge variant="pill" color="blue" icon="clock">
+                                            In progress
+                                        </flux:badge>
+                                    @break
+
+                                    @case('approved')
+                                        <flux:badge variant="pill" color="green" icon="check-circle">
+                                            Completed
+                                        </flux:badge>
+                                    @break
+
+                                    @case('rejected')
+                                        <flux:badge variant="pill" color="red" icon="x-circle">
+                                            Rejected
+                                        </flux:badge>
+                                    @break
+
+                                    @default
+                                        <flux:badge variant="pill">
+                                            {{ ucfirst($quote->status) }}
+                                        </flux:badge>
+                                @endswitch
+                            </div>
+
+                            <flux:button href="{{ Storage::url($quote->url) }}" variant="ghost" target="_blank"
+                                icon:trailing="arrow-up-right" onclick="event.stopPropagation();">
+                                View
+                            </flux:button>
+                        </div>
+                    @endforeach
+
+                    {{-- No quotes --}}
+                @else
+                    <div
+                        class="rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 p-4 text-sm text-zinc-500">
+                        Er zijn geen offertes beschikbaar voor deze klant.
+                    </div>
                 @endif
             </div>
         </div>

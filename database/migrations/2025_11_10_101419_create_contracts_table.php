@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->decimal('total_amount', 10, 2);
-            $table->enum('status', ['active', 'expired', 'terminated'])->default('active');
+            $table->enum('status', [ 'pending', 'active', 'expired', 'terminated'])->default('active');
             $table->string('pdf_path')->nullable();
             $table->timestamps();
         });

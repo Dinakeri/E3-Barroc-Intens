@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\QuoteSentMail;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Order;
@@ -10,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PDF;
 
@@ -17,11 +19,24 @@ use PDF;
 
 class QuoteController extends Controller
 {
-    // public function userInvoice(Request $request, string $invoiceId)
-    // {
 
-    //     return $request->user()->downloadInvoice($invoiceId, [], 'my-invoice');
-    // }
+    public function index()
+    {
+        $quotes = Quote::with('customer')->orderBy('created_at', 'desc')->paginate(20);
+
+        return view('quotes.index', compact('quotes'));
+    }
+
+    public function updateStatus(Request $request, Quote $quote)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:draft,sent,approved,rejected',
+        ]);
+
+        $quote->update($validated);
+
+        return redirect()->back()->with('success', 'Quote status updated successfully. Status: ' . $quote->status);
+    }
 
     public function generatePdf($customer_id)
     {
@@ -35,7 +50,8 @@ class QuoteController extends Controller
             abort(403, 'Klant is niet actief');
         }
 
-        $order = Order::where('customer_id', $customer->id)->latest()->firstOrFail();
+        $order = Order::where('customer_id', $customer->id)->whereHas('orderItems')->orderBy('created_at')->firstOrFail();
+        // dd($order->orderItems);
 
         $total_amount = $order->orderItems->sum(fn($item) => $item->qty * $item->price);
 
@@ -49,9 +65,10 @@ class QuoteController extends Controller
 
 
         // 2. Generate PDF with Barryvdh/Dompdf
-        $pdf = FacadePdf::loadView('quotes.index', [
+        $pdf = FacadePdf::loadView('quotes.template', [
             'customer' => $customer,
             'quote' => $quote,
+            'order' => $order,
         ]);
 
         // 3. Create PDF filename
@@ -61,45 +78,57 @@ class QuoteController extends Controller
         Storage::disk('public')->put($pdfName, $pdf->output());
 
         // 5. Save PDF URL to database
-        $quote->url = Storage::url($pdfName);
-        $quote->save(); // ← THIS is the missing part
+        $quote->url = $pdfName;
+        $quote->save();
 
         // 6. Return PDF to browser
         return $pdf->stream("offerte_{$quote->id}.pdf");
     }
 
-    public function accept(Quote $quote)
+
+
+    public function preview(Quote $quote)
     {
-        if ($quote->status !== 'sent') abort(403);
+        $quote->load('customer');
 
-        $quote->update(['status' => 'accepted']);
+        return view('quotes.preview', compact('quote'));
+    }
 
-        $contract = Contract::create([
-            'customer_id' => $quote->customer_id,
-            'quote_id' => $quote->id,
-            'start_date' => now(),
-            'status' => 'active',
+
+    public function send(Quote $quote)
+    {
+        // dd($quote);
+        Mail::to($quote->customer->email)
+            ->send(new QuoteSentMail($quote));
+
+        $quote->update([
+            'status' => 'sent',
         ]);
 
-        foreach ($quote->items as $item) {
-            $contract->items()->create([
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'price' => $item->price,
-            ]);
-        }
+        return back()->with('success', 'Quote sent to customer.');
+    }
+
+    public function approve(Quote $quote)
+    {
+        abort_if($quote->status !== 'sent', 403);
+
+        $quote->update(['status' => 'approved']);
 
         return view('quotes.result', [
-            'message' => 'Offerte succesvol geaccepteerd!'
+            'title' => 'Offerte goedgekeurd',
+            'message' => 'Bedankt! Wij nemen spoedig contact met u op.',
         ]);
     }
 
     public function reject(Quote $quote)
     {
+        abort_if($quote->status !== 'sent', 403);
+
         $quote->update(['status' => 'rejected']);
 
         return view('quotes.result', [
-            'message' => 'Offerte is afgewezen.'
+            'title' => 'Offerte afgewezen',
+            'message' => 'De offerte is afgewezen. Neem contact op bij vragen.',
         ]);
     }
 }

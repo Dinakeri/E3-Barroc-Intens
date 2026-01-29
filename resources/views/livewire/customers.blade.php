@@ -43,27 +43,27 @@
                 <table class="w-full">
                     <thead>
                         <tr class="border-b border-zinc-200 dark:border-zinc-700">
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Naam
                             </th>
 
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Email
                             </th>
 
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Status
                             </th>
 
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Offertes
                             </th>
 
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Notities
                             </th>
 
-                            <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                            <th class="px-4 py-5 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                 Acties
                             </th>
                         </tr>
@@ -73,17 +73,17 @@
                             <tr onclick="window.location='{{ route('customers.show', $customer) }}'"
                                 class="cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
 
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-5">
                                     <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $customer->name }}
                                     </div>
                                 </td>
 
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-5">
                                     <div class="text-sm text-zinc-600 dark:text-zinc-400">{{ $customer->email }}
                                     </div>
                                 </td>
 
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-5">
                                     @if ($customer->status === 'new')
                                         <flux:badge color="blue" icon="sparkles">
                                             {{ ucfirst($customer->status) }}
@@ -103,41 +103,60 @@
                                     @endif
                                 </td>
 
-                                <td class="px-4 py-3">
-                                    <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
-                                        @if ($customer->bkr_status && $customer->bkr_status == 'cleared')
-                                            @if ($customer->quote)
-                                                @if ($customer->quote->url)
-                                                    <flux:button href="{{ $customer->quote->url }}" variant="ghost"
-                                                        target="_blank" icon:trailing="arrow-up-right"
-                                                        onclick="event.stopPropagation();">
-                                                        Open PDF
-                                                    </flux:button>
-                                                @else
-                                                    <div class="text-zinc-900 dark:text-zinc-100">Geen offerte</div>
-                                                @endif
+                                <td class="px-4 py-5">
+                                    <div class="text-sm text-zinc-900 dark:text-zinc-100">
+
+                                        {{-- BKR NOT DONE --}}
+                                        @if (!$customer->bkr_status)
+                                            <span class="text-zinc-200">BKR check nog niet uitgevoerd!</span>
+
+                                            {{-- BKR REGISTERED (BLOCKED) --}}
+                                        @elseif ($customer->bkr_status === 'registered')
+                                            <span class="text-red-600">
+                                                Klant is geregistreerd in BKR en heeft geen contract mogelijkheid!
+                                            </span>
+
+                                            {{-- BKR CLEARED --}}
+                                        @elseif ($customer->bkr_status === 'cleared')
+                                            {{-- Accepted quote --}}
+                                            @if ($customer->acceptedQuote?->url)
+                                                <flux:button href="{{ Storage::url($customer->acceptedQuote->url) }}"
+                                                    variant="ghost" target="_blank" icon:trailing="arrow-up-right"
+                                                    onclick="event.stopPropagation();">
+                                                    Open geaccepteerde offerte
+                                                </flux:button>
+
+                                                {{-- Other quotes exist --}}
+                                            @elseif ($customer->quotes->isNotEmpty())
+                                                @php
+                                                    $latestQuote = $customer->quotes->sortByDesc('created_at')->first();
+                                                @endphp
+
+                                                <flux:button href="{{ Storage::url($latestQuote->url) }}"
+                                                    variant="ghost" target="_blank" icon:trailing="arrow-up-right"
+                                                    onclick="event.stopPropagation();">
+                                                    Open laatste offerte
+                                                </flux:button>
+
+                                                {{-- No quotes → generate --}}
                                             @else
                                                 <flux:button wire:click.stop="generateQuote({{ $customer->id }})"
                                                     variant="ghost" size="sm">
                                                     Offerte genereren
                                                 </flux:button>
                                             @endif
-                                        @elseif ($customer->bkr_status && $customer->bkr_status == 'registered')
-                                            <div class="text-sm text-zinc-900 dark:text-zinc-100">Klant is geregistreerd
-                                                in BKR en heeft geen contract mogelijkheid!.</div>
-                                        @else
-                                            <div class="text-sm text-zinc-900 dark:text-zinc-100">BKR check nog niet
-                                                uitgevoerd!</div>
                                         @endif
+
                                     </div>
                                 </td>
 
-                                <td class="px-4 py-3">
+
+                                <td class="px-4 py-5">
                                     <div class="text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[200px]">
                                         {{ $customer->notes }}</div>
                                 </td>
 
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-5">
                                     <flux:button wire:click.stop="showCustomerDetails({{ $customer }})"
                                         variant="ghost" size="sm">
                                         Bekijk Details
@@ -202,7 +221,7 @@
                         <flux:label>BKR-status</flux:label>
                         <div class="mt-1">
 
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-5">
                                 @if ($selectedCustomer->bkr_status === 'pending')
                                     <flux:badge color="zinc" icon="clock">
                                         {{ ucfirst($selectedCustomer->bkr_status) }}
@@ -232,7 +251,7 @@
                         <flux:label>Status</flux:label>
                         <div class="mt-1">
 
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-5">
                                 @if ($selectedCustomer->status === 'new')
                                     <flux:badge color="blue" icon="sparkles">
                                         {{ ucfirst($selectedCustomer->status) }}

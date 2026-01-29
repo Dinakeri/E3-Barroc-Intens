@@ -14,20 +14,14 @@ class ContractController extends Controller
 {
     public function index()
     {
-        $contracts = Contract::orderBy('created_at', 'desc')->get();
+        $contracts = Contract::with('customer.quotes')->latest()->get();
 
-        // Preload any customers that match contract.customer by name and their quote
-        $names = $contracts->pluck('customer')->filter()->unique()->values();
-        $customers = Customer::with('quote')->get()->filter(function ($customer) use ($names) {
-            return $names->contains($customer->name);
-        })->keyBy('name');
-
-        return view('contracts.index', compact('contracts', 'customers'));
+        return view('contracts.index', compact('contracts'));
     }
 
     public function create()
     {
-        $customers = Customer::all();
+        $customers = Customer::with('quotes')->orderBy('name')->get();
         return view('contracts.create', compact('customers'));
     }
 
@@ -41,7 +35,7 @@ class ContractController extends Controller
             'end_date' => 'nullable|date',
         ]);
 
-        $quote = Quote::with('items')->findOrFail($validated['quote_id']);
+        $quote = Quote::findOrFail($validated['quote_id']);
 
         $contract = Contract::create([
             'customer_id' => $validated['customer_id'],
@@ -49,7 +43,7 @@ class ContractController extends Controller
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'total_amount' => $quote->total_amount,
-            'status' => 'draft',
+            'status' => 'active',
         ]);
 
         $html = view('contracts.template', [
@@ -64,13 +58,18 @@ class ContractController extends Controller
         $pdf->render();
 
         $path = "contracts/contract-{$contract->id}.pdf";
-        Storage::put($path, $pdf->output());
+        Storage::disk('public')->put($path, $pdf->output());
 
         $contract->update(['pdf_path' => $path]);
 
         return redirect()
             ->route('contracts.show', $contract)
             ->with('success', 'Contract gegenereerd. Wacht op goedkeuring.');
+    }
+
+    public function show(Contract $contract)
+    {
+        return view('contracts.show', compact('contract'));
     }
 
     public function approve(Contract $contract)

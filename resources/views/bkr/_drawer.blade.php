@@ -53,7 +53,7 @@
         </flux:fieldset>
 
         <div class="mt-6 flex justify-end gap-3">
-            <flux:button variant="ghost" type="button" @click="openBkrDrawer = false">
+            <flux:button variant="ghost" type="button" @click="$root.openBkrDrawer = false">
                 Annuleren
             </flux:button>
 

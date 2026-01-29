@@ -4,9 +4,13 @@ use App\Http\Controllers\BkrController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\maintenanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QuoteController;
+use App\Mail\QuoteSentMail;
+use App\Models\Quote;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -41,20 +45,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
     Route::put('/payments/{payment}', [PaymentController::class, 'update'])->name('payments.update');
     // Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
-    Route::get('/bkr/customers',[BkrController::class, 'index'])->name('bkr.customers');
+    Route::get('/bkr/customers', [BkrController::class, 'index'])->name('bkr.customers');
     Route::post('bkr/check', [BkrController::class, 'performBkrCheck'])->name('bkr.check');
 
     Route::get('contracts', [ContractController::class, 'index'])->name('contracts.index');
     Route::get('/contracts/create', [ContractController::class, 'create'])->name('contracts.create');
     Route::post('/contracts', [ContractController::class, 'store'])->name('contracts.store');
+    Route::get('/contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
     // end finance
 
     // start maintenance
-    Route::get('dashboards/maintenance', [App\Http\Controllers\maintenanceController::class, 'index'])->name('dashboards.maintenance');
-    Route::get('maintenance/repairs', [App\Http\Controllers\maintenanceController::class, 'repairs'])->name('maintenance.repairs');
-    Route::post('maintenance/repairs/schedule', [App\Http\Controllers\maintenanceController::class, 'scheduleRepair'])->name('maintenance.repairs.schedule');
-    Route::get('maintenance/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('maintenance.calendar');
-    Route::get('dashboards/calendar', [App\Http\Controllers\maintenanceController::class, 'calendar'])->name('dashboards.calendar');
+    Route::get('dashboards/maintenance', [MaintenanceController::class, 'index'])->name('dashboards.maintenance');
+    Route::get('maintenance/repairs', [MaintenanceController::class, 'repairs'])->name('maintenance.repairs');
+    Route::post('maintenance/repairs/schedule', [MaintenanceController::class, 'scheduleRepair'])->name('maintenance.repairs.schedule');
+    Route::get('maintenance/calendar', [MaintenanceController::class, 'calendar'])->name('maintenance.calendar');
+    Route::get('dashboards/calendar', [MaintenanceController::class, 'calendar'])->name('dashboards.calendar');
     // end maintenance
 
     Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');
@@ -66,9 +71,27 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
+    Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.index');
+    Route::patch('/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('quotes.update-status');
+    Route::post('/quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
     Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
-    Route::get('/offertes/{offerte}/accept', [QuoteController::class, 'accept'])->name('offertes.accept');
-    Route::get('/offertes/{offerte}/reject', [QuoteController::class, 'reject'])->name('offertes.reject');
+    Route::get('/quotes/{quote}/preview', [QuoteController::class, 'preview'])->name('quotes.preview');
+    Route::get('/quotes/{quote}/approve', [QuoteController::class, 'approve'])->name('quotes.approve')->middleware('signed');
+    Route::get('/quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject')->middleware('signed');
+    Route::get('/preview/quote-mail', function () {
+        $quote = Quote::with('customer')->orderByDesc('id')->firstOrFail();
+
+        return new QuoteSentMail($quote)->render();
+    });
+    Route::get('/test-mail', function () {
+        $quote = Quote::first();
+
+        Mail::to('kwadjoeric0201@gmail.com')
+            ->send(new QuoteSentMail($quote));
+
+        return 'Mail sent';
+    });
+
 
     // start sales
     Route::view('sales/products', 'sales/products')->name('products');

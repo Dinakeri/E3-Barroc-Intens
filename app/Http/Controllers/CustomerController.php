@@ -36,10 +36,10 @@ class CustomerController extends Controller
             'email' => 'required|email|unique:customers,email',
             'phone' => 'nullable|string|max:20',
             'contact_person' => 'nullable|string',
-            'place' => 'nullable|string',
+            'street' => 'nullable|string',
             'house_number' => 'nullable|integer',
             'postcode' => 'nullable|string',
-            'street' => 'nullable|string',
+            'place' => 'nullable|string',
             'kvk_number' => 'nullable|integer',
             'status' => 'nullable|in:new,active,inactive',
             'notes' => 'nullable|string',
@@ -47,7 +47,6 @@ class CustomerController extends Controller
         // dd($validated);
         Customer::create($validated);
         return redirect()->route('customers.index')->with('success', 'Klant succesvol aangemaakt.');
-
     }
 
     /**
@@ -57,7 +56,6 @@ class CustomerController extends Controller
     {
         // $customer = Customer::findOrFail($customer_id);
         return view('customers.show', compact('customer'));
-
     }
 
     /**

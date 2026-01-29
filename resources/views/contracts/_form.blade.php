@@ -1,8 +1,8 @@
-<form action="{{ route('contracts.store') }}" method="POST" class="space-y-6">
+<form action="{{ route('contracts.store') }}" method="POST" class="space-y-6" x-data="contractForm()">
     @csrf
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10 ">
-        <div x-data="contractForm()" class="relative w-full">
+        <div class="relative w-full">
             <!-- Label -->
             <flux:label>Klant</flux:label>
 
@@ -29,19 +29,27 @@
                 </flux:callout>
             </div>
 
-            {{-- Customer selected and BKR passed but no quote --}}
-            <div x-show="selected && hasPassedBkr && !hasQuote" class="mt-4" x-cloak>
+            {{-- Customer selected and BKR passed but no approved quote --}}
+            <div x-show="selected && hasPassedBkr && !hasApprovedQuote" class="mt-4" x-cloak>
                 <flux:callout variant="warning">
-                    Deze klant heeft nog geen offerte. Maak eerst een offerte aan.
+                    Deze klant heeft nog geen goedgekeurde offerte.
                 </flux:callout>
             </div>
 
             {{-- Customer selected, BKR passed and has quote --}}
-            <div x-show="selected && hasPassedBkr && hasQuote" class="mt-4" x-cloak>
-                <flux:callout variant="success">
-                    Deze klant heeft de BKR-check succesvol afgerond en een offerte.
+            <div x-show="selected && hasPassedBkr && hasApprovedQuote" class="mt-4" x-cloak>
+                <flux:callout variant="success" class="flex items-center justify-between gap-4">
+                    <div>
+                        Deze klant heeft een goedgekeurde offerte.
+                    </div>
+
+                    <flux:button x-bind:href="approvedQuote ? approvedQuote.url : null" target="_blank"
+                        variant="primary" icon:trailing="arrow-up-right" onclick="event.stopPropagation();">
+                        Open offerte
+                    </flux:button>
                 </flux:callout>
             </div>
+
 
 
             <!-- Dropdown -->
@@ -72,7 +80,7 @@
 
             <!-- Hidden input for form submit -->
             <input type="hidden" name="customer_id" :value="selected?.id">
-            <input type="hidden" name="quote_id" :value="selectedQuote?.id">
+            <input type="hidden" name="quote_id" :value="approvedQuote?.id">
 
 
         </div>
@@ -87,7 +95,7 @@
             <flux:field>
                 <flux:label for="start_date">Startdatum</flux:label>
                 <flux:input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" required
-                    class="mt-2" x-bind:disabled="!selectedQuote" />
+                    class="mt-2" x-model="startDate" @change="updateEndDate()" x-bind:disabled="!canSubmit" />
                 @error('start_date')
                     <flux:error>{{ $message }}</flux:error>
                 @enderror
@@ -98,7 +106,7 @@
             <flux:field>
                 <flux:label for="end_date">Einddatum (optioneel)</flux:label>
                 <flux:input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="mt-2"
-                    x-bind:disabled="!selectedQuote" />
+                    x-model="endDate" x-bind:disabled="!canSubmit" />
                 @error('end_date')
                     <flux:error>{{ $message }}</flux:error>
                 @enderror
@@ -132,27 +140,49 @@
             selected: null,
             customers: @js($customers),
 
+            startDate: @js(old('start_date')),
+            endDate: @js(old('end_date')),
+
+
+            // ✅ BKR check
             get hasPassedBkr() {
-                return this.selected && this.selected.bkr_status === 'cleared'
+                return this.selected?.bkr_status === 'cleared'
             },
 
-            get hasQuote() {
-                return this.selected && this.selected.quotes && this.selected.quotes.length > 0
+            // ✅ Only approved quote counts
+            get approvedQuote() {
+                if (!this.selected?.quotes) return null
+
+                return this.selected.quotes.find(q => q.status === 'approved') ?? null
             },
 
-            get selectedQuote() {
-                return this.hasQuote ? this.selected.quotes[0] : null
+            // ✅ Does customer have an approved quote?
+            get hasApprovedQuote() {
+                return !!this.approvedQuote
             },
 
+            // ✅ Can submit contract
             get canSubmit() {
-                return this.hasPassedBkr && this.hasQuote
+                return this.hasPassedBkr && this.hasApprovedQuote
             },
 
+            // Search
             get filteredCustomers() {
                 return this.customers.filter(c =>
                     c.name.toLowerCase().includes(this.search.toLowerCase()) ||
                     c.email.toLowerCase().includes(this.search.toLowerCase())
                 )
+            },
+
+            updateEndDate() {
+                if (!this.startDate) return
+
+                const start = new Date(this.startDate)
+                const end = new Date(start)
+                end.setFullYear(start.getFullYear() + 1)
+
+                // Format YYYY-MM-DD for input[type=date]
+                this.endDate = end.toISOString().split('T')[0]
             }
         }
     }

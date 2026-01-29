@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Customer;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quote>
@@ -17,6 +19,7 @@ class QuoteFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
             'customer_id' => Customer::inRandomOrder()->first()->id,
             'valid_until' => $this->faker->date(),

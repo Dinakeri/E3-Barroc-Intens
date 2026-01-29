@@ -24,7 +24,7 @@ class ContractFactory extends Factory
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->date(),
             'total_amount' => $this->faker->randomFloat(2, 500, 10000),
-            'status' => $this->faker->randomElement(['active', 'expired', 'terminated']),
+            'status' => $this->faker->randomElement(['pending', 'active', 'expired', 'terminated']),
         ];
     }
 }

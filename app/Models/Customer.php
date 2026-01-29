@@ -25,12 +25,25 @@ class Customer extends Model
         'notes',
     ];
 
-    public function quote() {
-        return $this->hasOne(Quote::class);
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
     }
 
-    public function orders() {
-    return $this->hasMany(Order::class);
+    public function acceptedQuote()
+    {
+        return $this->hasOne(Quote::class)->where('status', 'approved');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function isEligibleForQuote(): bool
+    {
+        return $this->status === 'active'
+            && $this->bkr_status === 'cleared'
+            && ! $this->quotes()->where('status', 'approved')->exists();
+    }
 }
