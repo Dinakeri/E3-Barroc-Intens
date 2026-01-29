@@ -30,7 +30,7 @@ class CheckRole
         }
 
         if (!in_array($request->user()->role, $roles)) {
-            return redirect()->route('dashboard')->with('error', 'Je kan die pagina niet bezoeken.');
+            return redirect()->route('dashboard')->with('error', 'Je hebt geen rechten om die pagina te bezoeken.');
         }
 
         return $next($request);

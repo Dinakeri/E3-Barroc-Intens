@@ -17,6 +17,7 @@ class Product extends Model
         'sales_price',
         'description',
         'stock',
+        'min_stock',
         'status',
         'length',
         'width',

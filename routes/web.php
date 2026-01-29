@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -76,7 +77,20 @@ Route::middleware(['auth'])->group(function () {
 
     // Purchasing routes - only purchasing and admin roles
     Route::middleware('role:purchasing,admin')->group(function () {
-        Route::view('dashboards/purchasing', 'dashboards.purchasing')->name('dashboards.purchasing');
+        Route::get('dashboards/purchasing', function () {
+            $warningsCount = \App\Models\Warning::unresolved()->count();
+            return view('dashboards.purchasing', compact('warningsCount'));
+        })->name('dashboards.purchasing');
+        
+        // Product/Voorraad routes
+        Route::get('/purchasing/products', function () {
+            return view('purchasing.products.index');
+        })->name('products.index');
+        Route::get('purchasing/products/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('purchasing/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('purchasing/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('purchasing/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('purchasing/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     });
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');

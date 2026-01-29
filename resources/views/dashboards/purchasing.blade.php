@@ -1,28 +1,25 @@
 <x-layouts.dashboard>
     @section('title', 'Inkoop Dashboard')
-    <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Inkoop Dashboard</h1>
-        <p>Welkom op het Inkoop Dashboard. Hier vindt u een overzicht van inkoop en voorraadbeheer.</p>
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <h1 class="text-3xl font-bold mb-2 text-left">Inkoop Dashboard</h1>
+            <p>Welkom op het Inkoop Dashboard. Hier vindt u een overzicht van inkoop en voorraadbeheer.</p>
+        </div>
+        
+        <!-- Warnings Box -->
+        <div class="bg-yellow-500 text-black rounded-lg px-4 py-3 flex items-center gap-3 shadow-lg">
+            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <div>
+                <div class="font-bold text-sm">Waarschuwingen</div>
+                <div class="text-2xl font-bold">{{ $warningsCount ?? 0 }}</div>
+            </div>
+        </div>
     </div>
 
     @section('sidebar')
-        <flux:navlist class="w-64">
-            <flux:navlist.item href="{{ route('dashboards.purchasing') }}" class="mb-4" icon="home">Startpagina</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="shopping-cart">Bestellingen</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="cube">Voorraad</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="users">Leveranciers</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Rapporten</flux:navlist.item>
-
-            <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            
-            <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="home">Dashboard</flux:navlist.item>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
-                    Afmelden
-                </flux:navlist.item>
-            </form>
-        </flux:navlist>
+        <x-purchasing-sidebar current="dashboard" />
     @endsection
 
     <div class="grid grid-cols-3 gap-6 mb-6">
