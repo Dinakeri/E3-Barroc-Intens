@@ -13,7 +13,7 @@
                             <h1 
                                 carousel-title 
                                 class="absolute left-0 top-[-80px] w-full text-[200px] text-center pointer-events-none select-none" 
-                                style="z-index:-1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(255,255,255,0.6);"
+                                style="z-index: -1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(255,255,255,0.6);"
                             ></h1>
                         </div>
                         <div class="flex flex-row justify-center items-center w-full">
@@ -39,7 +39,7 @@
                             <h1 
                                 carousel-title 
                                 class="absolute left-0 top-[-70px] w-full text-[200px] text-center pointer-events-none select-none" 
-                                style="z-index:-1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(255,255,255,0.6);"
+                                style="z-index: -1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 50px rgba(255,255,255,0.6);"
                             ></h1>
                         </div>
                         <div class="flex flex-row justify-center items-center w-full">

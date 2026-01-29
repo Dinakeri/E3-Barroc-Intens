@@ -13,6 +13,7 @@
     </flux:navlist.item>
 
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
+    <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="arrow-left">Dashboard</flux:navlist.item>
     <form action="{{ route('logout') }}" method="POST">
         <flux:navlist.item class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Afmelden</flux:navlist.item>
     </form>
