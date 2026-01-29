@@ -108,17 +108,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($quote->items as $item)
+                    @foreach ($order->orderItems as $item)
                         <tr>
-                            <td>{{ $item->description }}</td>
+                            <td>{{ $item->product->name }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>€{{ number_format($item->unit_price, 2) }}</td>
-                            <td>€{{ number_format($item->quantity * $item->unit_price, 2) }}</td>
+                            <td>€{{ number_format($item->price, 2) }}</td>
+                            <td>€{{ number_format($item->quantity * $item->price, 2) }}</td>
                         </tr>
                     @endforeach
                     <tr>
                         <td colspan="3" class="total">Total:</td>
-                        <td>€{{ number_format($quote->total_price, 2) }}</td>
+                        <td>€{{ number_format($quote->total_amount, 2) }}</td>
                     </tr>
                 </tbody>
             </table>

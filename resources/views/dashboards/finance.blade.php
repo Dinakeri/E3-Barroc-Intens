@@ -1,23 +1,30 @@
 <x-layouts.dashboard>
-    @section('title', 'Financien Dashboard')
-    @section('sidebar')
-        @include('partials.FinanceSidebar')
-    @endsection
-    <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Financien Dashboard</h1>
-        <p>Welcome bij het Financien Dashboard. hier kan je een overzicht vinden van de financiële statistieken en prestaties.</p>
-    </div>
+    @section('title', 'Financiën Dashboard')
 
     @section('sidebar')
         @include('partials.FinanceSidebar')
     @endsection
 
-    <div class="contracts">
-        <h2 class="text-2xl font-bold mb-4">Actieve Contracten</h2>
+    <h1 class="text-3xl font-bold mb-6">Financiën Dashboard</h1>
 
-        <div class="flex items-center gap-4 mb-4">
-            <div class="text-4xl font-semibold" data-test="contracts-count">{{ \App\Models\Contract::count() }}</div>
+    <p class="mb-8">
+        Welcome bij het Financiën Dashboard.
+    </p>
+
+    {{-- Overlay --}}
+    <div x-show="openBkrDrawer" x-transition.opacity class="fixed inset-0 bg-black/40 z-40" @click="openBkrDrawer = false"
+        x-cloak></div>
+
+    {{-- Drawer --}}
+    <div x-show="openBkrDrawer" x-transition
+        class="fixed right-0 top-0 h-full w-[420px] bg-white dark:bg-zinc-900 shadow-xl z-50" x-cloak>
+        <div class="p-6 border-b flex justify-between items-center">
+            <flux:heading size="md">BKR-check</flux:heading>
+            <flux:button variant="ghost" @click="openBkrDrawer = false">✕</flux:button>
+        </div>
+
+        <div class="p-6">
+            @include('bkr._drawer')
         </div>
     </div>
-
 </x-layouts.dashboard>

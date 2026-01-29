@@ -64,10 +64,10 @@
         </div>
     </div>
 
+
     <flux:radio.group label="Status" name="status" class="mb-6 flex gap-2" variant="segmented">
         <flux:radio value="new" icon="sparkles" label="New" checked />
         <flux:radio value="active" icon="check-circle" label="Active" />
-        <flux:radio value="pending" icon="clock" label="Pending" />
         <flux:radio value="inactive" icon="x-circle" label="Inactive" />
     </flux:radio.group>
 
@@ -79,7 +79,7 @@
 
 
     <flux:button type="submit" variant="primary" class="w-full mt-4">
-        Add Customer
+        Opslaan
     </flux:button>
 
     @if ($errors->any)

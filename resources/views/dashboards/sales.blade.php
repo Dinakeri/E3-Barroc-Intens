@@ -7,27 +7,7 @@
 
 
     @section('sidebar')
-        <flux:navlist class="w-64">
-            <flux:navlist.item href="{{ route('dashboards.sales') }}" class="mb-4" icon="home">Startpagina</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="building-storefront">Bestellingen</flux:navlist.item>
-            <flux:navlist.item href="{{ url('sales/products') }}" class="mb-4" icon="currency-dollar">Producten</flux:navlist.item>
-            <flux:navlist.item href="{{ route('customers.index') }}" class="mb-4" icon="user">Klanten
-            </flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="chart-bar">Rapporten</flux:navlist.item>
-            <flux:navlist.item href="{{ route('customers.create') }}" class="mb-4" icon="plus">Nieuwe klant toevoegen
-            </flux:navlist.item>
-
-            <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            
-            <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="home">Dashboard</flux:navlist.item>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
-                    Afmelden
-                </flux:navlist.item>
-            </form>
-
-        </flux:navlist>
+        @include('partials.salesSidebar')
     @endsection
 
     <div class="grid grid-cols-3 gap-6 mb-6">

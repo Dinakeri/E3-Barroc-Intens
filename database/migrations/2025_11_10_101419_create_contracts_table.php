@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            // testing purposes only will adjust with foreign keys later
-            $table->string('customer');
-            $table->string('products');
-            $table->string('accesories');
+            $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->decimal('total_amount', 10, 2);
+            $table->enum('status', [ 'pending', 'active', 'expired', 'terminated'])->default('active');
+            $table->string('pdf_path')->nullable();
             $table->timestamps();
         });
     }

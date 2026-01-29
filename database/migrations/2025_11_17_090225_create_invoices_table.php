@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->foreignId('contract_id')->constrained('contracts')->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
             $table->date('invoice_date');
             $table->date('due_date');

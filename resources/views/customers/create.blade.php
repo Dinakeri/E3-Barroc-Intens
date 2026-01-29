@@ -5,7 +5,7 @@
             <h1 class="text-3xl font-bold mb-6 text-left">Add New Customer</h1>
         </div>
         <div class="">
-            <flux:button variant="primary" color="blue" icon="chevron-left" class="ml-auto">Back</flux:button>
+            <flux:button href="{{ route('customers.index') }}" variant="primary" color="blue" icon="chevron-left" class="ml-auto">Back</flux:button>
         </div>
     </div>
 

@@ -12,13 +12,23 @@ class Quote extends Model
 
     protected $fillable = [
         'customer_id',
-        'price',
-        'product',
+        'valid_until',
+        'total_amount',
         'status',
         'url',
     ];
 
     public function customer() {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function contract()
+    {
+        return $this->hasOne(Contract::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OfferteItem::class);
     }
 }

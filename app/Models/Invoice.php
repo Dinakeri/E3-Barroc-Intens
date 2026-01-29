@@ -12,6 +12,7 @@ class Invoice extends Model
     protected $fillable = [
         'customer_id',
         'order_id',
+        'contract_id',
         'total_amount',
         'invoice_date',
         'due_date',
@@ -41,4 +42,10 @@ class Invoice extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
 }

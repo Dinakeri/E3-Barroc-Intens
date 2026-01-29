@@ -36,19 +36,17 @@ class CustomerController extends Controller
             'email' => 'required|email|unique:customers,email',
             'phone' => 'nullable|string|max:20',
             'contact_person' => 'nullable|string',
-            'place' => 'nullable|string',
+            'street' => 'nullable|string',
             'house_number' => 'nullable|integer',
             'postcode' => 'nullable|string',
-            'street' => 'nullable|string',
+            'place' => 'nullable|string',
             'kvk_number' => 'nullable|integer',
-            'status' => 'nullable|in:new,active,pending,inactive',
+            'status' => 'nullable|in:new,active,inactive',
             'notes' => 'nullable|string',
         ]);
         // dd($validated);
         Customer::create($validated);
-        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
-
-        //
+        return redirect()->route('customers.index')->with('success', 'Klant succesvol aangemaakt.');
     }
 
     /**
@@ -58,30 +56,45 @@ class CustomerController extends Controller
     {
         // $customer = Customer::findOrFail($customer_id);
         return view('customers.show', compact('customer'));
-
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Customer $customer)
     {
-        //
+        return view('customers.edit', compact('customer'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Customer $customer)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'phone' => 'nullable|string|max:20',
+            'contact_person' => 'nullable|string',
+            'place' => 'nullable|string',
+            'house_number' => 'nullable|integer',
+            'postcode' => 'nullable|string',
+            'street' => 'nullable|string',
+            'kvk_number' => 'nullable|integer',
+            'status' => 'nullable|in:new,active,inactive',
+            'notes' => 'nullable|string',
+        ]);
+
+        $customer->update($validated);
+        return redirect()->route('customers.index')->with('success', 'Klant succesvol bijgewerkt.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+        return redirect()->route('customers.index')->with('success', 'Klant succesvol verwijderd.');
     }
 }
