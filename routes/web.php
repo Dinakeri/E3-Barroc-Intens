@@ -25,7 +25,12 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-    // start finance
+
+    // Finance routes - only finance and admin roles
+    Route::middleware('role:finance,admin')->group(function () {
+        Route::view('dashboards/finance', 'dashboards.finance')->name('dashboards.finance');
+        Route::get('dashboards/contracts', function () {
+            $contracts = \App\Models\Contract::orderBy('created_at', 'desc')->get();
 
     Route::view('dashboards/finance', 'dashboards.finance')->name('dashboards.finance');
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
@@ -119,3 +124,5 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
+
+

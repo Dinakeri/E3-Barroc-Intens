@@ -25,6 +25,8 @@ class maintenanceController extends Controller
     {
         $emails = null;
         $mailError = null;
+        // Get all maintenance workers for the assignment dropdown
+        $workers = \App\Models\User::where('role', 'maintenance')->orderBy('name')->get();
 
         try {
             if (!class_exists(\Webklex\IMAP\Facades\Client::class)) {
@@ -115,12 +117,20 @@ class maintenanceController extends Controller
             }
         }
 
-        return view('maintenance.repairs', compact('emails', 'mailError'));
+        return view('maintenance.repairs', compact('emails', 'mailError', 'workers'));
     }
     public function calendar()
     {
         $maintenances = Maintenance::all();
         return view('maintenance.calendar', compact('maintenances'));
+    }
+
+    public function workerCalendar()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $userId = $user ? $user->id : null;
+        $maintenances = Maintenance::where('AssignedTo', $userId)->get();
+        return view('maintenance.workerCalendar', compact('maintenances'));
     }
 
     public function scheduleRepair(Request $request)
@@ -131,18 +141,23 @@ class maintenanceController extends Controller
                 'from' => 'required|string',
                 'date' => 'required|date',
                 'time' => 'required',
+                'assigned_to' => 'nullable|integer',
             ]);
 
             // Get optional fields without validation
             $subject = $request->input('subject', 'Reparatie');
             $fromName = $request->input('from_name', '');
             $notes = $request->input('notes', '');
+            $assignedTo = $validated['assigned_to'] ?? null;
 
             // Ensure all values are strings
             $subject = is_array($subject) ? implode(', ', $subject) : (string)$subject;
             $fromName = is_array($fromName) ? implode(', ', $fromName) : (string)$fromName;
             $notes = is_array($notes) ? implode(', ', $notes) : (string)$notes;
             $from = is_array($validated['from']) ? implode(', ', $validated['from']) : (string)$validated['from'];
+
+            // Build ISO datetime from date + time for calendar
+            $dateTime = sprintf('%sT%s:00', $validated['date'], $validated['time']);
 
             // Log the data being sent
             Log::debug('Schedule repair data', [
@@ -151,6 +166,9 @@ class maintenanceController extends Controller
                 'notes' => $notes,
                 'from' => $from,
                 'date' => $validated['date'],
+                'time' => $validated['time'],
+                'dateTime' => $dateTime,
+                'assigned_to' => $assignedTo,
             ]);
             // Check if this email is already scheduled
             $maintenance = Maintenance::where('email_id', $validated['email_id'])->first();
@@ -160,7 +178,8 @@ class maintenanceController extends Controller
                 $maintenance->update([
                     'Title' => $subject,
                     'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
-                    'Date' => (string)$validated['date'],
+                    'Date' => $dateTime,
+                    'AssignedTo' => $assignedTo,
                 ]);
                 $message = 'Reparatie succesvol gewijzigd';
             } else {
@@ -169,7 +188,8 @@ class maintenanceController extends Controller
                     'email_id' => $validated['email_id'],
                     'Title' => $subject,
                     'Content' => 'Van: ' . ($fromName ?: $from) . "\n\n" . $notes,
-                    'Date' => (string)$validated['date'],
+                    'Date' => $dateTime,
+                    'AssignedTo' => $assignedTo,
                 ]);
                 $message = 'Reparatie succesvol ingepland';
             }

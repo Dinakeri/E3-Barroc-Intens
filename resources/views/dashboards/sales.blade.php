@@ -1,8 +1,8 @@
 <x-layouts.dashboard>
-    @section('title', 'Sales Dashboard')
+    @section('title', 'Verkoopsdashboard')
     <div class="">
-        <h1 class="text-3xl font-bold mb-6 text-left">Sales Dashboard</h1>
-        <p>Welcome to the Sales Dashboard. Here you can find an overview of sales metrics and performance.</p>
+        <h1 class="text-3xl font-bold mb-6 text-left">Verkoopsdashboard</h1>
+        <p>Welkom op het Verkoopsdashboard. Hier vindt u een overzicht van verkoopsgegevens en prestaties.</p>
     </div>
 
 

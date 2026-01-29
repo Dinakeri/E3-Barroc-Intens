@@ -12,7 +12,7 @@
 
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
     <form action="{{ route('logout') }}" method="POST">
-        <flux:navlist.item class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Logout</flux:navlist.item>
+        <flux:navlist.item class="mb-4 mt-auto" icon="arrow-left-end-on-rectangle">Afmelden</flux:navlist.item>
     </form>
 
 </flux:navlist>
