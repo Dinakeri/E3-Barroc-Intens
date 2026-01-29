@@ -4,7 +4,7 @@ use App\Http\Controllers\BkrController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\maintenanceController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\QuoteController;
