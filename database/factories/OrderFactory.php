@@ -18,11 +18,16 @@ class OrderFactory extends Factory
      */
     public function definition(): array
     {
+        // Generate a random date within the last 6 months
+        $createdAt = $this->faker->dateTimeBetween('-6 months', 'now');
+        
         return [
             'customer_id' => Customer::inRandomOrder()->first()->id ,
             'order_date' => $this->faker->date(),
             'total_amount' => $this->faker->randomFloat(2, 20, 1000),
             'status' => $this->faker->randomElement(['pending', 'completed', 'cancelled']),
+            'created_at' => $createdAt,
+            'updated_at' => $createdAt,
         ];
     }
 }

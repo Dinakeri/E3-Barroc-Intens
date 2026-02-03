@@ -10,7 +10,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('active','phased_out','out_of_stock') NOT NULL");
+        // For SQLite, we don't need to do anything since it treats enums as text
+        // The column already exists and can store 'out_of_stock' values
+        // Just ensure the table exists and the migration is marked as done
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('active','phased_out','out_of_stock') NOT NULL");
+        }
     }
 
     /**
@@ -18,6 +23,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('active','phased_out') NOT NULL");
+        // SQLite doesn't support modifying enums, so no action needed for rollback
+        if (DB::getDriverName() !== 'sqlite') {
+            DB::statement("ALTER TABLE products MODIFY COLUMN status ENUM('active','phased_out') NOT NULL");
+        }
     }
 };

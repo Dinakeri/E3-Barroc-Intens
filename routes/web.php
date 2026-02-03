@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\SalesController;
 use App\Mail\QuoteSentMail;
 use App\Models\Quote;
 use Illuminate\Support\Facades\Mail;
@@ -73,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Sales routes - only sales and admin roles
     Route::middleware('role:sales,admin')->group(function () {
-        Route::view('dashboards/sales', 'dashboards.sales')->name('dashboards.sales');
+        Route::get('dashboards/sales', [SalesController::class, 'dashboard'])->name('dashboards.sales');
         Route::view('sales/products', 'sales/products')->name('products');
 
         // Orders
