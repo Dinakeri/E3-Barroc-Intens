@@ -12,6 +12,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SalesController;
 use App\Mail\QuoteSentMail;
 use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -21,7 +22,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', function () {
+    $users = User::orderBy('name')->get();
+    return view('dashboard', compact('users'));
+})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -85,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sales/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/sales/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/sales/orders/{order}', [OrderController::class, 'delete'])->name('orders.delete');
-        
+
         // Customer routes
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
         Route::view('customers/create', 'customers.create')->name('customers.create');
@@ -111,7 +115,7 @@ Route::middleware(['auth'])->group(function () {
             $warningsCount = \App\Models\Warning::unresolved()->count();
             return view('dashboards.purchasing', compact('warningsCount'));
         })->name('dashboards.purchasing');
-        
+
         // Product/Voorraad routes
         Route::get('/purchasing/products', function () {
             return view('purchasing.products.index');
