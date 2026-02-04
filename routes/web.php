@@ -4,7 +4,7 @@ use App\Http\Controllers\BkrController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\maintenanceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
@@ -20,9 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::view('dashboard', 'dashboard')->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -84,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sales/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
         Route::put('/sales/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::delete('/sales/orders/{order}', [OrderController::class, 'delete'])->name('orders.delete');
-        
+
         // Customer routes
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
         Route::view('customers/create', 'customers.create')->name('customers.create');
@@ -96,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Quote routes
         Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.index');
+        Route::get('/quotes/create', [QuoteController::class, 'create'])->name('quotes.create');
+        Route::post('/quotes', [QuoteController::class, 'store'])->name('quotes.store');
         Route::patch('/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('quotes.update-status');
         Route::post('/quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
         Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
@@ -110,7 +110,7 @@ Route::middleware(['auth'])->group(function () {
             $warningsCount = \App\Models\Warning::unresolved()->count();
             return view('dashboards.purchasing', compact('warningsCount'));
         })->name('dashboards.purchasing');
-        
+
         // Product/Voorraad routes
         Route::get('/purchasing/products', function () {
             return view('purchasing.products.index');
@@ -149,5 +149,4 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
-
 
