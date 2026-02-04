@@ -53,7 +53,7 @@ class QuoteController extends Controller
         $order = Order::where('customer_id', $customer->id)->whereHas('orderItems')->orderBy('created_at')->firstOrFail();
         // dd($order->orderItems);
 
-        $total_amount = $order->orderItems->sum(fn($item) => $item->qty * $item->price);
+        $total_amount = $order->total_amount;
 
 
         // 1. Create quote entry
@@ -86,6 +86,45 @@ class QuoteController extends Controller
     }
 
 
+    public function create()
+    {
+        $customers = Customer::with('orders', 'quotes')->orderBy('name')->get();
+        return view('quotes.create', compact('customers'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'order_id' => 'required|exists:orders,id',
+        ]);
+
+        $customer = Customer::findOrFail($validated['customer_id']);
+        $order = Order::findOrFail($validated['order_id']);
+
+        // dd( $customer, $order);
+        $quote = Quote::create([
+            'customer_id' => $customer->id,
+            'total_amount' => $order->total_amount,
+            'status' => 'draft',
+        ]);
+
+        $pdf = FacadePdf::loadView('quotes.template', [
+            'customer' => $customer,
+            'quote' => $quote,
+            'order' => $order,
+        ]);
+
+        $pdfName = 'quotes/quote_' . $quote->id . '.pdf';
+
+        Storage::disk('public')->put($pdfName, $pdf->output());
+
+        $quote->url = $pdfName;
+        $quote->save();
+
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol aangemaakt.');
+    }
+
 
     public function preview(Quote $quote)
     {
@@ -108,6 +147,7 @@ class QuoteController extends Controller
         return back()->with('success', 'Quote sent to customer.');
     }
 
+
     public function approve(Quote $quote)
     {
         abort_if($quote->status !== 'sent', 403);
@@ -119,6 +159,7 @@ class QuoteController extends Controller
             'message' => 'Bedankt! Wij nemen spoedig contact met u op.',
         ]);
     }
+
 
     public function reject(Quote $quote)
     {
