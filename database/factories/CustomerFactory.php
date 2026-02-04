@@ -16,6 +16,9 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+        // Generate a random date within the last 6 months
+        $createdAt = fake()->dateTimeBetween('-6 months', 'now');
+        
         return [
             'name' => fake()->company(),
             'email' => fake()->unique()->companyEmail(),
@@ -29,6 +32,8 @@ class CustomerFactory extends Factory
             'kvk_number' => fake()->numberBetween(10000000, 99999999),
             'status' => fake()->randomElement(['new', 'active',]),
             'notes' => fake()->paragraph(),
+            'created_at' => $createdAt,
+            'updated_at' => $createdAt,
         ];
     }
 }
