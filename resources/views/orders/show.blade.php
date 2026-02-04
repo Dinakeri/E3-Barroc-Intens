@@ -37,11 +37,13 @@
                 @endswitch
             </span>
 
-            <flux:button href="{{ route('orders.edit', $order) }}" icon="pencil-square" variant="primary" color="blue">
+            <flux:button href="{{ route('orders.edit', $order) }}" icon="pencil-square" variant="primary"
+                color="blue">
                 Bewerken
             </flux:button>
 
-            <flux:button href="{{ route('orders.index') }}" variant="primary" color="zinc" icon="arrow-left">Terug</flux:button>
+            <flux:button href="{{ route('orders.index') }}" variant="primary" color="zinc" icon="arrow-left">Terug
+            </flux:button>
         </div>
     </div>
 
@@ -49,15 +51,17 @@
     {{-- Customer info and order details --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {{-- Customer info and order --}}
-        <div class="border rounded-xl p-6 bg-white dark:bg-zinc-800">
-            <flux:heading size="md">Klant</flux:heading>
+        <a href="{{ route('customers.show', $order->customer) }}" class="hover:cursor-pointer">
+            <div class="border rounded-xl p-6 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700"">
+                <flux:heading size="md">Klant</flux:heading>
 
-            <div class="mt-4 space-y-1">
-                <div class="font-medium">{{ $order->customer->name }}</div>
-                <div class="text-sm text-zinc-500">{{ $order->customer->email }}</div>
-                <div class="text-sm text-zinc-500">{{ $order->customer->phone }}</div>
+                <div class="mt-4 space-y-1">
+                    <div class="font-medium">{{ $order->customer->name }}</div>
+                    <div class="text-sm text-zinc-500">{{ $order->customer->email }}</div>
+                    <div class="text-sm text-zinc-500">{{ $order->customer->phone }}</div>
+                </div>
             </div>
-        </div>
+        </a>
 
 
         {{-- Order details --}}
