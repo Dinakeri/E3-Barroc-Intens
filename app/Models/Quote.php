@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Quote extends Model
 {
     /** @use HasFactory<\Database\Factories\QuoteFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'customer_id',
@@ -25,6 +26,10 @@ class Quote extends Model
     public function contract()
     {
         return $this->hasOne(Contract::class);
+    }
+
+    public function order(){
+        return $this->belongsTo(Order::class);
     }
 
     public function items()
