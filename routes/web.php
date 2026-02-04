@@ -10,8 +10,10 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\UserController;
 use App\Mail\QuoteSentMail;
 use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -21,10 +23,23 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', function () {
+    $users = User::orderBy('name')->get();
+    return view('dashboard', compact('users'));
+})
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
+
+    Route::post('profile/photo', [UserController::class, 'updateProfilePhoto'])->name('profile.photo.update');
+
+    // Admin-only user management
+    Route::middleware('role:admin')->group(function () {
+        Route::get('admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+        Route::post('admin/users', [UserController::class, 'store'])->name('admin.users.store');
+    });
 
     // Finance routes - only finance and admin roles
     Route::middleware('role:finance,admin')->group(function () {

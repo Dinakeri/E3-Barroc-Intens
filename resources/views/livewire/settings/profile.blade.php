@@ -3,12 +3,17 @@
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new class extends Component {
+    use WithFileUploads;
+
     public string $name = '';
     public string $email = '';
+    public $photo;
 
     /**
      * Mount the component.
@@ -37,9 +42,18 @@ new class extends Component {
                 'max:255',
                 Rule::unique(User::class)->ignore($user->id)
             ],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ]);
 
         $user->fill($validated);
+
+        if ($this->photo) {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+
+            $user->profile_photo_path = $this->photo->store('profile-photos', 'public');
+        }
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
@@ -74,6 +88,27 @@ new class extends Component {
 
     <x-settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="relative flex h-14 w-14 shrink-0 overflow-hidden rounded-full">
+                    @if (auth()->user()->profilePhotoUrl())
+                        <img class="h-full w-full object-cover" src="{{ auth()->user()->profilePhotoUrl() }}" alt="{{ auth()->user()->name }}" />
+                    @else
+                        <span class="flex h-full w-full items-center justify-center rounded-full bg-neutral-200 text-lg font-semibold text-black dark:bg-neutral-700 dark:text-white">
+                            {{ auth()->user()->initials() }}
+                        </span>
+                    @endif
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                        {{ __('Profile photo') }}
+                        <input type="file" accept="image/*" wire:model="photo" class="mt-2 block w-full text-sm text-neutral-600 file:mr-3 file:rounded-lg file:border-0 file:bg-neutral-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-neutral-800 dark:text-neutral-300 dark:file:bg-white dark:file:text-neutral-900" />
+                    </label>
+                    @error('photo')
+                        <div class="mt-2 text-sm text-red-600">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
             <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
             <div>
