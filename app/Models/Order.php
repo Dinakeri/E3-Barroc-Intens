@@ -28,4 +28,8 @@ class Order extends Model
     public function invoices() {
         return $this->hasMany(Invoice::class);
     }
+
+    public function quote(){
+        return $this->hasOne(Quote::class);
+    }
 }
