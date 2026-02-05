@@ -10,23 +10,10 @@ use App\Models\Maintenance;
 use App\Models\Fault;
 class maintenanceController extends Controller
 {
-    public function index()
-    {
-        $installationAmount = Installation::count();
-        $maintenanceAmount = Maintenance::count();
-        $incidentAmount = Fault::count();
-        $recentMaintenances = Maintenance::orderByDesc('Date')
-            ->take(8)
-            ->get();
-
-        return view('dashboards.maintenance', compact('installationAmount', 'maintenanceAmount', 'incidentAmount', 'recentMaintenances'));
-    }
-    public function repairs()
+    public function fetchInboxEmails(): array
     {
         $emails = null;
         $mailError = null;
-        // Get all maintenance workers for the assignment dropdown
-        $workers = \App\Models\User::where('role', 'maintenance')->orderBy('name')->get();
 
         try {
             if (!class_exists(\Webklex\IMAP\Facades\Client::class)) {
@@ -75,20 +62,20 @@ class maintenanceController extends Controller
                 ]);
             }
 
-                    // Check which emails are already scheduled
-                    $scheduled = Maintenance::whereNotNull('email_id')
-                        ->get(['email_id','Date']);
-                    $scheduledMap = [];
-                    foreach ($scheduled as $s) { $scheduledMap[$s->email_id] = $s->Date; }
+            // Check which emails are already scheduled
+            $scheduled = Maintenance::whereNotNull('email_id')
+                ->get(['email_id','Date']);
+            $scheduledMap = [];
+            foreach ($scheduled as $s) { $scheduledMap[$s->email_id] = $s->Date; }
 
-                    $emails = $emails->map(function($email) use ($scheduledMap) {
-                        $email['scheduled'] = array_key_exists($email['id'], $scheduledMap);
-                        $email['scheduled_at'] = $email['scheduled'] ? $scheduledMap[$email['id']] : null;
-                        return $email;
-                    });
+            $emails = $emails->map(function($email) use ($scheduledMap) {
+                $email['scheduled'] = array_key_exists($email['id'], $scheduledMap);
+                $email['scheduled_at'] = $email['scheduled'] ? $scheduledMap[$email['id']] : null;
+                return $email;
+            });
         } catch (\Throwable $e) {
             $emails = null;
-            $mailError = $e->getMessage();
+            $mailError = 'E-mails ophalen mislukt. Controleer de mailbox-instellingen.';
 
             // Log full exception and any client config for debugging
             try {
@@ -116,6 +103,25 @@ class maintenanceController extends Controller
                 // ignore logging errors
             }
         }
+
+        return compact('emails', 'mailError');
+    }
+
+    public function index()
+    {
+        $installationAmount = Installation::count();
+        $maintenanceAmount = Maintenance::count();
+        $incidentAmount = Fault::count();
+        $recentMaintenances = Maintenance::orderByDesc('Date')
+            ->take(8)
+            ->get();
+
+        return view('dashboards.maintenance', compact('installationAmount', 'maintenanceAmount', 'incidentAmount', 'recentMaintenances'));
+    }
+    public function repairs()
+    {
+        $workers = \App\Models\User::where('role', 'maintenance')->orderBy('name')->get();
+        ['emails' => $emails, 'mailError' => $mailError] = $this->fetchInboxEmails();
 
         return view('maintenance.repairs', compact('emails', 'mailError', 'workers'));
     }

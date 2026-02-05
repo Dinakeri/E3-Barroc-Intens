@@ -14,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Mail\QuoteSentMail;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -25,7 +26,23 @@ Route::get('/', function () {
 
 Route::get('dashboard', function () {
     $users = User::orderBy('name')->get();
-    return view('dashboard', compact('users'));
+    $newEmails = null;
+    $mailError = null;
+
+    $user = Auth::user();
+    if ($user && $user->role === 'maintenance') {
+        $data = app(MaintenanceController::class)->fetchInboxEmails();
+        $mailError = $data['mailError'] ?? null;
+        $emails = $data['emails'] ?? null;
+
+        if ($emails) {
+            $newEmails = $emails->filter(fn ($email) => empty($email['scheduled']))->values();
+        } else {
+            $newEmails = collect();
+        }
+    }
+
+    return view('dashboard', compact('users', 'newEmails', 'mailError'));
 })
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
