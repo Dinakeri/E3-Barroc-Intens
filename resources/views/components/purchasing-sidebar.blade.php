@@ -10,10 +10,10 @@
     </flux:navlist.item>
     
     <flux:navlist.item 
-        href="#" 
+        href="{{ route('purchases.index') }}" 
         class="mb-4" 
         icon="shopping-cart"
-        :current="$current === 'orders'">
+        :current="$current === 'purchases'">
         Bestellingen
     </flux:navlist.item>
     
@@ -23,6 +23,14 @@
         icon="cube"
         :current="$current === 'products'">
         Voorraad
+    </flux:navlist.item>
+
+    <flux:navlist.item 
+        href="{{ route('parts.index') }}" 
+        class="mb-4" 
+        icon="squares-plus"
+        :current="$current === 'parts'">
+        Onderdelen
     </flux:navlist.item>
     
     <flux:navlist.item 
