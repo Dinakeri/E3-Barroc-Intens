@@ -65,7 +65,8 @@
                 </thead>
                 <tbody class=" divide-y divide-zinc-200 dark:divide-zinc-700">
                     @forelse ($invoices as $invoice)
-                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
+                        <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors hover:cursor-pointer"
+                            onclick="window.location='{{ route('invoices.show', $invoice) }}'">
                             <td class="px-4 py-3">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">{{ $invoice->id }}</div>
                             </td>
@@ -78,7 +79,7 @@
 
                             <td class="px-4 py-3">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    {{ $invoice->invoice_date->toDateString() }}
+                                    {{ $invoice->valid_until ? \Carbon\Carbon::parse($invoice->valid_until)->format('d-m-Y') : 'N.v.t.' }}
                                 </div>
                             </td>
 
@@ -89,15 +90,18 @@
 
                             <td class="px-4 py-3">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    @if ($invoice->status === 'failed')
+                                    @if ($invoice->status === 'cancelled')
                                         <flux:badge color="red" icon="x-circle">
-                                            Mislukt</flux:badge>
-                                    @elseif ($invoice->status === 'completed')
+                                            Geannuleerd</flux:badge>
+                                    @elseif ($invoice->status === 'sent')
+                                        <flux:badge color="blue" icon="paper-airplane">
+                                            Verzonden</flux:badge>
+                                    @elseif ($invoice->status === 'paid')
                                         <flux:badge color="green" icon="check-circle">
-                                            Voltooid</flux:badge>
+                                            Betaald</flux:badge>
                                     @else
-                                        <flux:badge color="zinc" icon="clock">
-                                            In behandeling</flux:badge>
+                                        <flux:badge color="amber" icon="pencil">
+                                            Concept</flux:badge>
                                     @endif
                                 </div>
                             </td>
@@ -107,7 +111,7 @@
                                     <div class="text-sm text-zinc-900 dark:text-zinc-100">
                                         <flux:button
                                             class="hover:cursor-pointer hover:text-blue-500 hover:border-b hover:border-blue-500 text-sm text-zinc-900 dark:text-zinc-100"
-                                            href="{{ route('invoices.pdf', $invoice) }}" target="_blank"
+                                            href="{{ Storage::url($invoice->pdf_path) }}" target="_blank"
                                             icon:trailing="arrow-up-right" onclick="event.stopPropagation();">
                                             Open PDF
                                         </flux:button>
