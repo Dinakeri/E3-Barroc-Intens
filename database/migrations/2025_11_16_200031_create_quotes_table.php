@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->date('valid_until')->nullable();
             $table->integer('total_amount')->default(0);
             $table->enum('status', ['draft', 'sent', 'approved', 'rejected'])->default('draft');
