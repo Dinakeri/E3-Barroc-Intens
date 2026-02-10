@@ -22,7 +22,7 @@
         </p>
 
         <p style="margin:30px 0">
-            <a href="{{ route('quotes.preview', $quote->url) }}"
+            <a href="{{ route('quotes.show', $quote->url) }}"
                 style="background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px">
                 View quote
             </a>
