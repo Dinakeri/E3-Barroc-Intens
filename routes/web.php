@@ -30,6 +30,9 @@ Route::get('dashboard', function () {
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::get('/quotes/{quote}/approve', [QuoteController::class, 'approve'])->name('quotes.approve')->middleware('signed');
+Route::get('/quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject')->middleware('signed');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
@@ -52,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
         Route::post('invoices', [InvoiceController::class, 'store'])->name('invoices.store');
         Route::get('invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+        Route::get('invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::get('test-invoice', [InvoiceController::class, 'testPdf'])->name('invoices.test');
         Route::get('dashboards/invoices', function () {
@@ -73,6 +77,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/contracts/create', [ContractController::class, 'create'])->name('contracts.create');
         Route::post('/contracts', [ContractController::class, 'store'])->name('contracts.store');
         Route::get('/contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
+        Route::put('/contracts/{contract}', [ContractController::class, 'update'])->name('contracts.update');
+        Route::delete('/contracts/{contract}', [ContractController::class, 'destroy'])->name('contracts.destroy');
     }); // end finance
 
     // Maintenance routes - only maintenance and admin roles
@@ -115,9 +121,9 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/quotes/{quote}/status', [QuoteController::class, 'updateStatus'])->name('quotes.update-status');
         Route::post('/quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
         Route::get('/quotes/pdf/{customer_id}', [QuoteController::class, 'generatePdf'])->name('quotes.generate');
-        Route::get('/quotes/{quote}/preview', [QuoteController::class, 'preview'])->name('quotes.preview');
-        Route::get('/quotes/{quote}/approve', [QuoteController::class, 'approve'])->name('quotes.approve')->middleware('signed');
-        Route::get('/quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject')->middleware('signed');
+        Route::get('/quotes/{quote}/show', [QuoteController::class, 'show'])->name('quotes.show');
+        Route::put('/quotes/{quote}', [QuoteController::class, 'update'])->name('quotes.update');
+        Route::delete('/quotes/{quote}', [QuoteController::class, 'destroy'])->name('quotes.destroy');
     });
 
     // Purchasing routes - only purchasing and admin roles
@@ -165,4 +171,3 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
-
