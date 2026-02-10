@@ -105,48 +105,38 @@
 
                                 <td class="px-4 py-5">
                                     <div class="text-sm text-zinc-900 dark:text-zinc-100">
-
-                                        {{-- BKR NOT DONE --}}
-                                        @if (!$customer->bkr_status)
-                                            <span class="text-zinc-200">BKR check nog niet uitgevoerd!</span>
-
-                                            {{-- BKR REGISTERED (BLOCKED) --}}
-                                        @elseif ($customer->bkr_status === 'registered')
-                                            <span class="text-red-600">
-                                                Klant is geregistreerd in BKR en heeft geen contract mogelijkheid!
-                                            </span>
-
-                                            {{-- BKR CLEARED --}}
-                                        @elseif ($customer->bkr_status === 'cleared')
-                                            {{-- Accepted quote --}}
-                                            @if ($customer->acceptedQuote?->url)
+                                        @if ($customer->quotes->count() > 0)
+                                            @if ($customer->acceptedQuote)
                                                 <flux:button href="{{ Storage::url($customer->acceptedQuote->url) }}"
                                                     variant="ghost" target="_blank" icon:trailing="arrow-up-right"
                                                     onclick="event.stopPropagation();">
                                                     Open geaccepteerde offerte
                                                 </flux:button>
-
-                                                {{-- Other quotes exist --}}
-                                            @elseif ($customer->quotes->isNotEmpty())
-                                                @php
-                                                    $latestQuote = $customer->quotes->sortByDesc('created_at')->first();
-                                                @endphp
-
-                                                <flux:button href="{{ Storage::url($latestQuote->url) }}"
+                                            @elseif ($customer->quotes->where('status', 'sent')->count() > 0)
+                                                <flux:button
+                                                    href="{{ Storage::url($customer->quotes->where('status', 'sent')->last()->url) }}"
                                                     variant="ghost" target="_blank" icon:trailing="arrow-up-right"
                                                     onclick="event.stopPropagation();">
-                                                    Open laatste offerte
+                                                    Open laatste verzonden offerte
                                                 </flux:button>
-
-                                                {{-- No quotes → generate --}}
+                                            @elseif ($customer->quotes->where('status', 'draft')->count() > 0)
+                                                <flux:button
+                                                    href="{{ Storage::url($customer->quotes->where('status', 'draft')->last()->url) }}"
+                                                    variant="ghost" target="_blank" icon:trailing="arrow-up-right"
+                                                    onclick="event.stopPropagation();">
+                                                    Open laatste concept offerte
+                                                </flux:button>
                                             @else
-                                                <flux:button wire:click.stop="generateQuote({{ $customer->id }})"
-                                                    variant="ghost" size="sm">
-                                                    Offerte genereren
+                                                <flux:button
+                                                    href="{{ Storage::url($customer->quotes->where('status', 'rejected')->last()->url) }}"
+                                                    variant="ghost" target="_blank" icon:trailing="arrow-up-right"
+                                                    onclick="event.stopPropagation();">
+                                                    Open laatste afgewezen offerte
                                                 </flux:button>
                                             @endif
+                                        @else
+                                            <span>Geen offertes</span>
                                         @endif
-
                                     </div>
                                 </td>
 
