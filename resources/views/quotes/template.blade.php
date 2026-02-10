@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Quote #{{ $quote->id }}</title>
+    <title>Offerte #{{ $quote->id }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -82,29 +82,29 @@
 <body>
     <div class="container">
         <header>
-            <h1>Quote #{{ $quote->id }}</h1>
-            <p>Date: {{ $quote->created_at->format('d-m-Y') }}</p>
+            <h1>Offerte #{{ $quote->id }}</h1>
+            <p>Datum: {{ $quote->created_at->format('d-m-Y') }}</p>
         </header>
 
         <div class="customer-info">
-            <h2>Customer Information</h2>
-            <p><strong>Name:</strong> {{ $customer->name }}</p>
-            <p><strong>Email:</strong> {{ $customer->email }}</p>
-            <p><strong>Phone:</strong> {{ $customer->phone ?? '-' }}</p>
-            <p><strong>Address:</strong>
-                {{ trim(($customer->straat ?? '') . ' ' . ($customer->huisnummer ?? '') . ', ' . ($customer->plaats ?? '')) }}
+            <h2>Klantinformatie</h2>
+            <p><strong>Naam:</strong> {{ $customer->name }}</p>
+            <p><strong>E-mailadres:</strong> {{ $customer->email }}</p>
+            <p><strong>Telefoonnummer:</strong> {{ $customer->phone ?? '-' }}</p>
+            <p><strong>Adres:</strong>
+                {{ trim(($customer->street ?? '') . ' ' . ($customer->house_number ?? '') . ', ' . ($customer->place ?? '')) }}
             </p>
         </div>
 
         <div class="quote-info">
-            <h2>Quote Details</h2>
+            <h2>Offertedetails</h2>
             <table>
                 <thead>
                     <tr>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
+                        <th>Beschrijving</th>
+                        <th>Hoeveelheid</th>
+                        <th>Eenheidsprijs</th>
+                        <th>Totaal</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,7 +117,7 @@
                         </tr>
                     @endforeach
                     <tr>
-                        <td colspan="3" class="total">Total:</td>
+                        <td colspan="3" class="total">Totaal:</td>
                         <td>€{{ number_format($quote->total_amount, 2) }}</td>
                     </tr>
                 </tbody>
@@ -125,7 +125,7 @@
         </div>
 
         <footer>
-            Thank you for considering our services. If you have any questions, please contact us.
+            Dank je wel voor het overwegen van onze diensten. Bij vragen kunt u ons contacteren.
         </footer>
     </div>
 </body>
