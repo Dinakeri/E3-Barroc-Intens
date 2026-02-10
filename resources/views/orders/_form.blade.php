@@ -71,7 +71,7 @@
 
                 <flux:fieldset>
                     <flux:label>Besteldatum</flux:label>
-                    <flux:input type="date" name="order_date" required />
+                    <flux:input type="date" name="order_date" value="{{ old('order_date', now()->format('Y-m-d')) }}" required />
                 </flux:fieldset>
 
                 <flux:fieldset>

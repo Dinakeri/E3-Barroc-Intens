@@ -85,7 +85,7 @@
                             <flux:label for="place">Plaats</flux:label>
                             <flux:input id="place" name="place" type="text" placeholder="Breda bijv."
                                 class="w-full" />
-                            <flux:error name="place" value="{{ old('place', $customer->place ?? '') }}" />
+                            <flux:error name="place" value="{{ old('place', $customer->street ?? '') }}" />
                         </flux:field>
                     </div>
                 </div>
