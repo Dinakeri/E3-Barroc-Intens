@@ -9,6 +9,8 @@ use App\Models\Quote;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 
 class ContractController extends Controller
 {
@@ -46,16 +48,59 @@ class ContractController extends Controller
             'status' => 'active',
         ]);
 
-        $html = view('contracts.template', [
+        $pdf = FacadePdf::loadView('contracts.template', [
             'contract' => $contract,
             'quote' => $quote,
             'customer' => $contract->customer,
-        ])->render();
+            'order' => $quote->order,
+        ]);
 
-        $pdf = new Dompdf();
-        $pdf->loadHtml($html);
-        $pdf->setPaper('A4');
-        $pdf->render();
+        $path = "contracts/contract-{$contract->id}.pdf";
+        Storage::disk('public')->put($path, $pdf->output());
+
+        $contract->update(['pdf_path' => $path]);
+
+        $invoice = Invoice::create([
+            'customer_id' => $contract->customer_id,
+            'contract_id' => $contract->id,
+            'order_id' => $quote->order_id,
+            'total_amount' => $contract->total_amount,
+            'valid_until' => now()->addDays(30),
+            'status' => 'draft',
+        ]);
+
+        $inv_pdf = FacadePdf::loadView('invoices.template', [
+            'invoice' => $invoice,
+            'customer' => $contract->customer,
+            'items' => $quote->order->orderItems,
+        ]);
+
+        $inv_path = "invoices/invoice-{$invoice->id}.pdf";
+        Storage::disk('public')->put($inv_path, $inv_pdf->output());
+
+        $invoice->update(['pdf_path' => $inv_path]);
+
+        return redirect()
+            ->route('contracts.show', [$contract, $invoice])
+            ->with('success', 'Contract gegenereerd. Wacht op goedkeuring.');
+    }
+
+    public function update(Request $request, Contract $contract)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,active,expired,terminated',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
+
+        $contract->update($validated);
+
+        $pdf = FacadePdf::loadView('contracts.template', [
+            'contract' => $contract,
+            'quote' => $contract->quote,
+            'customer' => $contract->customer,
+            'order' => $contract->quote->order,
+        ]);
 
         $path = "contracts/contract-{$contract->id}.pdf";
         Storage::disk('public')->put($path, $pdf->output());
@@ -64,8 +109,9 @@ class ContractController extends Controller
 
         return redirect()
             ->route('contracts.show', $contract)
-            ->with('success', 'Contract gegenereerd. Wacht op goedkeuring.');
+            ->with('success', 'Contractstatus bijgewerkt.');
     }
+
 
     public function show(Contract $contract)
     {
