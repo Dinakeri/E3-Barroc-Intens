@@ -13,6 +13,7 @@ class Quote extends Model
 
     protected $fillable = [
         'customer_id',
+        'order_id',
         'valid_until',
         'total_amount',
         'status',
