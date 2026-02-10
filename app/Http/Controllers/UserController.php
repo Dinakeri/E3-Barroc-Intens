@@ -40,7 +40,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('dashboard')->with('status', 'User created successfully.');
+        return redirect()->route('dashboard')->with('status', 'Gebruiker succesvol aangemaakt.');
     }
 
     public function updateProfilePhoto(Request $request)
@@ -60,6 +60,6 @@ class UserController extends Controller
             'profile_photo_path' => $validated['photo']->store('profile-photos', 'public'),
         ]);
 
-        return back()->with('status', 'Profile photo updated.');
+        return back()->with('status', 'Profielfoto bijgewerkt.');
     }
 }
