@@ -97,6 +97,7 @@ class QuoteController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'order_id' => 'required|exists:orders,id',
+            'valid_until' => 'required|date|after:today',
         ]);
 
         $customer = Customer::findOrFail($validated['customer_id']);
@@ -105,7 +106,9 @@ class QuoteController extends Controller
         // dd( $customer, $order);
         $quote = Quote::create([
             'customer_id' => $customer->id,
+            'order_id' => $order->id,
             'total_amount' => $order->total_amount,
+            'valid_until' => $validated['valid_until'],
             'status' => 'draft',
         ]);
 
@@ -126,13 +129,45 @@ class QuoteController extends Controller
     }
 
 
-    public function preview(Quote $quote)
+    public function show(Quote $quote)
     {
         $quote->load('customer');
 
-        return view('quotes.preview', compact('quote'));
+        return view('quotes.show', compact('quote'));
     }
 
+
+    public function update(Request $request, Quote $quote)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:draft,sent,approved,rejected',
+            'valid_until' => 'required|date|after:today',
+        ]);
+
+        $quote->update($validated);
+
+        $pdf = FacadePdf::loadView('quotes.template', [
+            'customer' => $quote->customer,
+            'quote' => $quote,
+            'order' => $quote->order,
+        ]);
+
+        $pdfName = 'quotes/quote_' . $quote->id . '.pdf';
+
+        Storage::disk('public')->put($pdfName, $pdf->output());
+        $quote->url = $pdfName;
+        $quote->save();
+
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol bijgewerkt.');
+    }
+
+
+    public function destroy(Quote $quote)
+    {
+        $quote->delete();
+
+        return redirect()->route('quotes.index')->with('success', 'Offerte succesvol verwijderd.');
+    }
 
     public function send(Quote $quote)
     {
