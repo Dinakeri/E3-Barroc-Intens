@@ -14,19 +14,18 @@ class Invoice extends Model
         'order_id',
         'contract_id',
         'total_amount',
-        'invoice_date',
-        'due_date',
+        'valid_until',
         'pdf_path',
         'status',
     ];
 
-    /**
-     * Cast invoice date fields to Carbon instances.
-     */
-    protected $casts = [
-        'invoice_date' => 'date',
-        'due_date' => 'date',
-    ];
+    // /**
+    //  * Cast invoice date fields to Carbon instances.
+    //  */
+    // protected $casts = [
+    //     'invoice_date' => 'date',
+    //     'due_date' => 'date',
+    // ];
 
     public function customer()
     {
@@ -47,5 +46,4 @@ class Invoice extends Model
     {
         return $this->belongsTo(Contract::class);
     }
-
 }

@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\Customer;
+use App\Models\Order;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 
 class InvoiceController extends Controller
 {
     public function create()
     {
-        $customers = Customer::orderBy('name')->get();
-        return view('invoices.create', compact('customers'));
+        $customers = Customer::with('contracts', 'orders')->orderBy('name')->get();
+        $contracts = Invoice::with('customer')->orderByDesc('created_at')->paginate(15);
+        return view('invoices.create', compact('customers', 'contracts'));
     }
 
     /**
@@ -25,86 +29,52 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
+    /**
+     * Display a single invoice.
+     */
+    public function show(Invoice $invoice)
+    {
+        $invoice->load('customer', 'order', 'contract', 'payments');
+        return view('invoices.show', compact('invoice'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
-            'invoice_date' => 'required|date',
-            'due_date' => 'required|date',
-            'bkr' => 'required|in:no',
-            'items' => 'nullable|array',
-            'items_json' => 'nullable|string',
+            'contract_id' => 'required|exists:contracts,id',
+            'order_id' => 'required|exists:orders,id',
+            'valid_until' => 'required|date',
+            'total_amount' => 'required|numeric|min:0',
+            'status' => 'required|in:draft,sent,paid,cancelled',
         ]);
 
-        // Parse items: either from structured items or JSON textarea
-        $items = [];
-        if (! empty($validated['items'])) {
-            $items = $validated['items'];
-        } elseif (! empty($validated['items_json'])) {
-            $items = json_decode($validated['items_json'], true) ?: [];
-        }
-
-        if (empty($items)) {
-            return back()->withErrors(['items' => 'Geen items opgegeven']);
-        }
-
-        $total = collect($items)->sum(fn($i) => $i['qty'] * $i['price']);
+        $customer = Customer::findOrFail($validated['customer_id']);
+        $contract = Contract::findOrFail($validated['contract_id']);
+        $order = Order::findOrFail($validated['order_id']);
 
         $invoice = Invoice::create([
-            'customer_id' => $validated['customer_id'],
-            'total_amount' => $total,
-            'invoice_date' => $validated['invoice_date'],
-            'due_date' => $validated['due_date'],
+            'customer_id' => $contract->customer_id,
+            'contract_id' => $contract->id,
+            'order_id' => $validated['order_id'],
+            'total_amount' => $validated['total_amount'],
+            'valid_until' => $validated['valid_until'],
+            'status' => $validated['status'],
         ]);
 
-        $customer = Customer::find($validated['customer_id']);
+        $pdf = FacadePdf::loadView('invoices.template', [
+            'invoice' => $invoice,
+            'customer' => $customer,
+            'order' => $order,
+            'contract' => $contract,
+        ]);
 
-        $html = view('invoices.template', ['invoice' => $invoice, 'customer' => $customer, 'items' => $items])->render();
+        $path = "invoices/invoice-{$invoice->id}.pdf";
+        Storage::disk('public')->put($path, $pdf->output());
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        $output = $dompdf->output();
-
-        // store PDF to storage and save path on invoice
-        $path = 'invoices/invoice-' . $invoice->id . '.pdf';
-        Storage::put($path, $output);
         $invoice->update(['pdf_path' => $path]);
 
-        return response($output, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="invoice-' . $invoice->id . '.pdf"');
-    }
-
-    public function downloadPdf(Invoice $invoice)
-    {
-        $customer = $invoice->customer;
-
-        // Since invoice items are not stored in DB in this schema, create a placeholder
-        $items = [
-            ['description' => 'Service A', 'qty' => 1, 'price' => $invoice->total_amount],
-        ];
-
-        // If we have a stored PDF, serve it directly
-        if ($invoice->pdf_path && Storage::exists($invoice->pdf_path)) {
-            $content = Storage::get($invoice->pdf_path);
-            return response($content, 200)
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'inline; filename="invoice-' . $invoice->id . '.pdf"');
-        }
-
-        $html = view('invoices.template', compact('invoice', 'customer', 'items'))->render();
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        $output = $dompdf->output();
-        return response($output, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="invoice-' . $invoice->id . '.pdf"');
+        return redirect()->route('invoices.show', $invoice->id)->with('success', 'Factuur succesvol aangemaakt.');
     }
 
     public function testPdf()
@@ -123,8 +93,8 @@ class InvoiceController extends Controller
                 'total_amount' => 150.00,
             ],
             'items' => [
-                ['description'=>'Product X','qty'=>2,'price'=>25],
-                ['description'=>'Product Y','qty'=>1,'price'=>100],
+                ['description' => 'Product X', 'qty' => 2, 'price' => 25],
+                ['description' => 'Product Y', 'qty' => 1, 'price' => 100],
             ],
         ];
 
@@ -140,4 +110,3 @@ class InvoiceController extends Controller
             ->header('Content-Disposition', 'inline; filename="test-invoice.pdf"');
     }
 }
-

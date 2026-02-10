@@ -24,10 +24,9 @@ class InvoiceFactory extends Factory
             'order_id' => Order::inRandomOrder()->first()->id,
             'contract_id' => Contract::inRandomOrder()->first()->id,
             'total_amount' => $this->faker->randomFloat(2, 50, 5000),
-            'invoice_date' => $this->faker->date(),
-            'due_date' => $this->faker->date(),
+            'valid_until' => $this->faker->date(),
             'pdf_path' => $this->faker->filePath(),
-            'status' => $this->faker->randomElement(['pending', 'completed', 'failed']),
+            'status' => $this->faker->randomElement(['draft', 'sent', 'paid', 'cancelled']),
         ];
     }
 }

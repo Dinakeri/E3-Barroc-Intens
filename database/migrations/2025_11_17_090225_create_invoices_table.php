@@ -17,9 +17,8 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('contract_id')->constrained('contracts')->onDelete('cascade');
             $table->decimal('total_amount', 10, 2);
-            $table->date('invoice_date');
-            $table->date('due_date');
-            $table->enum('status', ['pending', 'completed', 'failed']);
+            $table->date('valid_until');
+            $table->enum('status', ['draft', 'sent', 'paid', 'cancelled'])->default('draft');
             $table->timestamps();
         });
     }
