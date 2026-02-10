@@ -20,6 +20,8 @@
     </header>
 
     <main class="flex-1 overflow-y-auto p-6 ml-72 text-black dark:text-white">
+
+        {{-- Success message --}}
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition class="w-full mb-6">
                 <flux:callout variant="success">
@@ -41,6 +43,8 @@
             </div>
         @endif
 
+
+        {{-- Error message --}}
         @if (session()->has('error'))
             <div x-data="{ show: true }" x-show="show" x-transition class="w-full mb-6">
                 <flux:callout variant="error">
