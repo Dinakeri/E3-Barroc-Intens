@@ -1,5 +1,5 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl" x-data="{ photoOpen: false }" @keydown.escape.window="photoOpen = false">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl" x-data="{ photoOpen: false, clockedIn: @js($isClockedIn ?? false), clockInOpen: false, clockOutOpen: false, clockNotes: '' }" @keydown.escape.window="photoOpen = false; clockInOpen = false; clockOutOpen = false">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="flex h-full flex-col justify-between p-4">
@@ -41,7 +41,17 @@
                 <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
             </div>
             <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+                <div class="flex h-full flex-col items-center justify-center gap-3 p-4">
+                    <div class="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Klok</div>
+                    <button type="button"
+                        class="flex h-12 w-full max-w-[220px] items-center justify-center rounded-lg px-4 text-sm font-semibold text-white shadow-sm transition"
+                        :class="clockedIn ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'"
+                        @click="clockedIn ? clockOutOpen = true : clockInOpen = true"
+                        :aria-label="clockedIn ? 'Klok uit' : 'Klok in'">
+                        <span x-text="clockedIn ? 'Klok uit' : 'Klok in'"></span>
+                    </button>
+                    <div class="text-xs text-neutral-500 dark:text-neutral-400" x-text="clockedIn ? 'Ingeklokt' : 'Uitgeklokt'"></div>
+                </div>
             </div>
         </div>
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
@@ -81,9 +91,14 @@
                                     <div class="font-medium">{{ $user->name }}</div>
                                     <div class="truncate text-neutral-500 dark:text-neutral-400">{{ $user->email }}</div>
                                 </div>
-                                <span class="rounded-full border border-neutral-300 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-neutral-700 dark:border-neutral-600 dark:text-neutral-300">
-                                    {{ $roleLabels[$user->role ?? 'none'] ?? 'Geen' }}
-                                </span>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('admin.users.hours', $user) }}" class="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-600 dark:text-neutral-200">
+                                        Zie uren
+                                    </a>
+                                    <span class="rounded-full border border-neutral-300 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-neutral-700 dark:border-neutral-600 dark:text-neutral-300">
+                                        {{ $roleLabels[$user->role ?? 'none'] ?? 'Geen' }}
+                                    </span>
+                                </div>
                             </li>
                         @empty
                             <li class="rounded-lg border border-dashed border-neutral-300 px-3 py-6 text-center text-sm text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
@@ -155,6 +170,45 @@
                     <div class="flex justify-end gap-2">
                         <button type="button" class="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:text-neutral-200" @click="photoOpen = false">Annuleren</button>
                         <button type="submit" class="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-neutral-800 dark:bg-white dark:text-neutral-900">Opslaan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div x-show="clockInOpen" x-cloak class="fixed inset-0 z-[999999] flex items-center justify-center">
+            <div class="absolute inset-0 bg-black/50" @click="clockInOpen = false"></div>
+            <div class="relative w-full max-w-md rounded-xl border border-neutral-200 bg-white p-6 shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Klok in bevestigen</h3>
+                    <button type="button" class="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400" @click="clockInOpen = false">✕</button>
+                </div>
+                <form method="POST" action="{{ route('clock.in') }}" class="space-y-4">
+                    @csrf
+                    <p class="text-sm text-neutral-600 dark:text-neutral-300">Weet je zeker dat je wilt inklokken?</p>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" class="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:text-neutral-200" @click="clockInOpen = false">Annuleren</button>
+                        <button type="submit" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500" @click="clockedIn = true; clockInOpen = false">Klok in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div x-show="clockOutOpen" x-cloak class="fixed inset-0 z-[999999] flex items-center justify-center">
+            <div class="absolute inset-0 bg-black/50" @click="clockOutOpen = false"></div>
+            <div class="relative w-full max-w-md rounded-xl border border-neutral-200 bg-white p-6 shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
+                <div class="mb-4 flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Klok uit bevestigen</h3>
+                    <button type="button" class="text-neutral-500 hover:text-neutral-700 dark:text-neutral-400" @click="clockOutOpen = false">✕</button>
+                </div>
+                <form method="POST" action="{{ route('clock.out') }}" class="space-y-4">
+                    @csrf
+                    <label class="flex flex-col gap-1 text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                        Notities
+                        <textarea name="notes" x-model="clockNotes" rows="3" placeholder="Voeg eventueel notities toe..." class="resize-none rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm focus:border-neutral-400 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100"></textarea>
+                    </label>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" class="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:text-neutral-200" @click="clockOutOpen = false">Annuleren</button>
+                        <button type="submit" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500" @click="clockedIn = false; clockOutOpen = false; clockNotes = ''">Klok uit</button>
                     </div>
                 </form>
             </div>

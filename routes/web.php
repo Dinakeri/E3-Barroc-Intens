@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BkrController;
+use App\Http\Controllers\ClockEntryController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
@@ -28,6 +29,7 @@ Route::get('dashboard', function () {
     $users = User::orderBy('name')->get();
     $newEmails = null;
     $mailError = null;
+    $isClockedIn = false;
 
     $user = Auth::user();
     if ($user && $user->role === 'maintenance') {
@@ -42,7 +44,11 @@ Route::get('dashboard', function () {
         }
     }
 
-    return view('dashboard', compact('users', 'newEmails', 'mailError'));
+    if ($user) {
+        $isClockedIn = $user->clockEntries()->whereNull('end_time')->exists();
+    }
+
+    return view('dashboard', compact('users', 'newEmails', 'mailError', 'isClockedIn'));
 })
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -51,11 +57,14 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::post('profile/photo', [UserController::class, 'updateProfilePhoto'])->name('profile.photo.update');
+    Route::post('clock-in', [ClockEntryController::class, 'clockIn'])->name('clock.in');
+    Route::post('clock-out', [ClockEntryController::class, 'clockOut'])->name('clock.out');
 
     // Admin-only user management
     Route::middleware('role:admin')->group(function () {
         Route::get('admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
         Route::post('admin/users', [UserController::class, 'store'])->name('admin.users.store');
+        Route::get('admin/users/{user}/hours', [UserController::class, 'hours'])->name('admin.users.hours');
     });
 
     // Finance routes - only finance and admin roles

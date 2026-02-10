@@ -62,4 +62,11 @@ class UserController extends Controller
 
         return back()->with('status', 'Profielfoto bijgewerkt.');
     }
+
+    public function hours(User $user)
+    {
+        $entries = $user->clockEntries()->orderByDesc('start_time')->get();
+
+        return view('admin.users.hours', compact('user', 'entries'));
+    }
 }

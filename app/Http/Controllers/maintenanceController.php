@@ -39,12 +39,22 @@ class maintenanceController extends Controller
             // messages and then we limit the result set locally.
             if ($folder) {
                 try {
-                    $messages = $folder->messages()->all()->limit(50)->get();
+                    $query = $folder->messages()->all()->limit(20);
+                    if (method_exists($query, 'setFetchBody')) {
+                        $query->setFetchBody(false);
+                    }
+                    if (method_exists($query, 'setFetchFlags')) {
+                        $query->setFetchFlags(false);
+                    }
+                    if (method_exists($query, 'setFetchOrder')) {
+                        $query->setFetchOrder('desc');
+                    }
+                    $messages = $query->get();
                 } catch (\Throwable $eMessages) {
                     // Fallback to a safer query: fetch the message list and slice
                     Log::debug('IMAP messages()->all() failed: ' . $eMessages->getMessage());
                     $all = $folder->messages()->get();
-                    $messages = collect($all)->slice(0, 50);
+                    $messages = collect($all)->slice(0, 20);
                 }
             } else {
                 $messages = collect();
@@ -52,13 +62,22 @@ class maintenanceController extends Controller
 
             $emails = collect();
             foreach ($messages as $m) {
+                $preview = '';
+                try {
+                    if (method_exists($m, 'getTextBody')) {
+                        $preview = (string) ($m->getTextBody() ?: '');
+                    }
+                } catch (\Throwable $previewEx) {
+                    $preview = '';
+                }
+
                 $emails->push([
                     'id' => (string)$m->getUid(),
                     'subject' => (string)$m->getSubject(),
                     'from' => optional($m->getFrom()[0])->mail ?? '',
                     'from_name' => optional($m->getFrom()[0])->personal ?? '',
                     'date' => $m->getDate(),
-                    'preview' => $m->getTextBody() ?: $m->getHtmlBody(),
+                    'preview' => $preview,
                 ]);
             }
 

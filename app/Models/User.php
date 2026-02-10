@@ -73,4 +73,9 @@ class User extends Authenticatable
 
         return Storage::disk('public')->url($this->profile_photo_path);
     }
+
+    public function clockEntries()
+    {
+        return $this->hasMany(ClockEntry::class);
+    }
 }
