@@ -54,7 +54,7 @@
                         <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                             Klant </th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                            Datum</th>
+                            Geldig tot</th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                             Totaal (€)</th>
                         <th class="px-4 py-3 text-left text-sm font-semibold text-zinc-900 dark:text-zinc-100">

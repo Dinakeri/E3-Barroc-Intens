@@ -82,6 +82,12 @@
                 @endif
             </flux:navlist>
 
+            <flux:navlist.group>
+                <flux:navlist.item icon="bell" :href="route('notifications.index')" :current="request()->routeIs('notifications.*')" wire:navigate @click.prevent="openNotificationsDrawer = true">
+                    {{ __('Meldingen') }}
+                </flux:navlist.item>
+            </flux:navlist.group>
+
             <flux:spacer />
 
             <!-- Desktop User Menu -->

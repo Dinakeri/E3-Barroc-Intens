@@ -9,6 +9,12 @@
     <flux:navlist.item href="" class="mb-4" icon="cog">Instellingen</flux:navlist.item>
     <flux:navlist.item href="{{ route('customers.create') }}" class="mb-4" icon="plus">Nieuwe klant toevoegen
     </flux:navlist.item>
+    <flux:navlist.item href="#" class="mb-4" icon="bell" @click.prevent="openNotificationsDrawer = true">Meldingen
+        @php $count = auth()->user()->unreadNotifications->count(); @endphp
+        @if ($count > 0)
+            <flux:badge size="sm" color="red">{{ $count }}</flux:badge>
+        @endif
+    </flux:navlist.item>
 
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
     <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="arrow-left">Dashboard</flux:navlist.item>

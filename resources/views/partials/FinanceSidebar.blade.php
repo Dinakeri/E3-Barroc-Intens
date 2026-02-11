@@ -14,6 +14,13 @@
     </flux:navlist.item>
     <flux:navlist.item href="#" class="mb-4" icon="chevron-double-right" @click.prevent="openBkrDrawer = true">
         Voer een BKR-check</flux:navlist.item>
+    <flux:navlist.item href="#" class="mb-4" icon="bell" @click.prevent="openNotificationsDrawer = true">Meldingen
+        @php $count = auth()->user()->unreadNotifications->count(); @endphp
+        @if($count > 0)
+            <flux:badge size="sm" color="red">{{ $count }}</flux:badge>
+        @endif
+    </flux:navlist.item>
+
     <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
     <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="home">Dashboard</flux:navlist.item>
     <form method="POST" action="{{ route('logout') }}">

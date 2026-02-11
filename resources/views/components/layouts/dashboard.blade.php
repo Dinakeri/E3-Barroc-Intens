@@ -3,7 +3,7 @@
 
 @include('partials.head')
 
-<body class="font-sans min-h-screen flex text-white bg-neutral-800" x-data="{ openBkrDrawer: false }">
+<body class="font-sans min-h-screen flex text-white bg-neutral-800" x-data="{ openBkrDrawer: false, openNotificationsDrawer: false }">
     <header class="bg-neutral-900 w-72 shadow-lg fixed">
         <aside class="flex flex-col h-screen w-4/5 mx-auto">
             <!-- Logo / Title -->
@@ -88,7 +88,25 @@
         </div>
     </div>
 
+    {{-- Notifications Drawer --}}
+    <div x-show="openNotificationsDrawer" x-transition.opacity class="fixed inset-0 bg-black/40 z-40"
+        @click="openNotificationsDrawer = false" x-cloak></div>
+
+    <!-- Notifications Drawer -->
+    <div x-show="openNotificationsDrawer" x-transition
+        class="fixed right-0 top-0 h-full w-[420px] bg-white dark:bg-zinc-900 shadow-xl z-50" x-cloak>
+        <div class="p-6 border-b flex justify-between items-center">
+            <flux:heading size="md">Meldingen</flux:heading>
+            <flux:button variant="ghost" @click="openNotificationsDrawer = false">✕</flux:button>
+        </div>
+
+        <div class="p-6">
+            @include('notifications._drawer')
+        </div>
+    </div>
+
     @fluxScripts
+
 </body>
 
 </html>

@@ -1,7 +1,7 @@
 import './charts.js'
 import './productPage.js'
 import { gsap } from "gsap";
-import { Flip } from "gsap/Flip";
+// import { Flip } from "gsap/Flip";
 
 import { CustomEase } from "gsap/CustomEase";
 // CustomBounce requires CustomEase
