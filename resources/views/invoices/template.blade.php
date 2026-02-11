@@ -178,14 +178,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($order->orderItems as $item)
+                @forelse ($invoice->order?->orderItems ?? [] as $item)
                     <tr>
                         <td>{{ $item['description'] }}</td>
                         <td class="text-right">{{ $item['qty'] }}</td>
                         <td class="text-right">€{{ number_format($item['price'], 2, ',', '.') }}</td>
                         <td class="text-right">€{{ number_format($item['qty'] * $item['price'], 2, ',', '.') }}</td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center">Geen items gevonden.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
