@@ -3,22 +3,11 @@
     <div>
         <h1 class="text-3xl font-bold mb-6 text-left text-white">Onderhoud Dashboard</h1>
     </div>
+
     @section('sidebar')
-        <flux:navlist class="w-64">
-            <flux:navlist.item href="{{ route('dashboards.maintenance') }}" class="mb-4" icon="home">Home</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="wrench-screwdriver">Installaties</flux:navlist.item>
-            <flux:navlist.item href="#" class="mb-4" icon="wrench">Onderhoud</flux:navlist.item>
-            <flux:navlist.item href="{{ route('dashboards.calendar.worker') }}" class="mb-4" icon="calendar-days">Kalender</flux:navlist.item>
-            <flux:spacer class="my-4 border-t border-neutral-700"></flux:spacer>
-            <flux:navlist.item href="{{ route('dashboard') }}" class="mb-4" icon="home">Dashboard</flux:navlist.item>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <flux:navlist.item as="button" type="submit" class="mb-4 mt-auto w-full text-left" icon="arrow-left-end-on-rectangle">
-                    Uitloggen
-                </flux:navlist.item>
-            </form>
-        </flux:navlist>
+        @include('partials.maintenanceSidebar')
     @endsection
+
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
     <style>
         #calendar {
@@ -27,45 +16,58 @@
             border-radius: 8px;
             min-height: 600px;
         }
+
         .fc {
             color: #e4e4e7;
         }
+
         .fc .fc-toolbar-title {
             color: #e4e4e7;
         }
+
         .fc .fc-button {
             background: #3f3f46;
             border-color: #52525b;
             color: #e4e4e7;
         }
+
         .fc .fc-button:hover {
             background: #52525b;
         }
+
         .fc .fc-button-primary:not(:disabled).fc-button-active {
             background: #3b82f6;
             border-color: #3b82f6;
         }
-        .fc-theme-standard td, .fc-theme-standard th {
+
+        .fc-theme-standard td,
+        .fc-theme-standard th {
             border-color: #3f3f46;
         }
+
         .fc-theme-standard .fc-scrollgrid {
             border-color: #3f3f46;
         }
+
         .fc .fc-daygrid-day-number {
             color: #e4e4e7;
         }
+
         .fc .fc-col-header-cell {
             background: #18181b;
             color: #e4e4e7;
         }
+
         .fc .fc-daygrid-day.fc-day-today {
             background: #1e293b;
         }
+
         /* Modal z-index fix */
         #eventModal {
             z-index: 9999 !important;
         }
-        #eventModal > div {
+
+        #eventModal>div {
             position: relative;
             z-index: 10000;
         }
@@ -82,7 +84,8 @@
                 <h2 id="eventTitle" class="text-xl font-bold text-white"></h2>
                 <button onclick="closeEventModal()" class="text-neutral-400 hover:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
@@ -105,7 +108,7 @@
 
                 <div class="flex gap-3 mt-6">
                     <button onclick="closeEventModal()"
-                            class="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition">
+                        class="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded transition">
                         Sluiten
                     </button>
                 </div>
@@ -140,15 +143,15 @@
                     day: 'Dag'
                 },
                 events: [
-                    @foreach($maintenances as $maintenance)
-                    {
-                        title: {!! json_encode($maintenance->Title) !!},
-                        start: {!! json_encode($maintenance->Date) !!},
-                        color: '#10b981',
-                        extendedProps: {
-                            content: {!! json_encode($maintenance->Content) !!}
-                        }
-                    },
+                    @foreach ($maintenances as $maintenance)
+                        {
+                            title: {!! json_encode($maintenance->Title) !!},
+                            start: {!! json_encode($maintenance->Date) !!},
+                            color: '#10b981',
+                            extendedProps: {
+                                content: {!! json_encode($maintenance->Content) !!}
+                            }
+                        },
                     @endforeach
                 ],
                 eventClick: function(info) {
@@ -210,4 +213,4 @@
             }
         });
     </script>
-</x-layouts.dashb>
+    </x-layouts.dashb>
