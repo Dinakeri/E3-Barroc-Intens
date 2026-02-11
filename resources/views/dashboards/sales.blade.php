@@ -1,5 +1,5 @@
 <x-layouts.dashboard>
-    @section('title', 'Verkoopsdashboard')
+    @include('partials.sectionSalesTitle')
     <div class="">
         <h1 class="text-3xl font-bold mb-6 text-left">Verkoopsdashboard</h1>
         <p>Welkom op het Verkoopsdashboard. Hier vindt u een overzicht van verkoopsgegevens en prestaties.</p>
