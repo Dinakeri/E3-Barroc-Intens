@@ -5,6 +5,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\maintenanceController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Mail\QuoteSentMail;
 use App\Models\Quote;
 use App\Models\User;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -149,6 +151,13 @@ Route::middleware(['auth'])->group(function () {
             ->send(new QuoteSentMail($quote));
         return 'Mail sent';
     });
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/{id}/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
+    Route::post('/notifications/{id}/mark-unread', [NotificationController::class, 'markUnread'])->name('notifications.markUnread');
+    Route::post('/notifications/mark-all-unread', [NotificationController::class, 'markAllUnread'])->name('notifications.markAllUnread');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
