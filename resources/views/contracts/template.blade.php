@@ -269,7 +269,7 @@
                 box-shadow: none;
                 width: 80%;
                 margin: 0 auto;
-                padding: 40px 50px;
+                padding: 40px;
             }
         }
     </style>
@@ -406,6 +406,17 @@
             <div class="section-title">Aanvullende Diensten</div>
             <div class="terms-content">
                 <p><strong>Aanvullende Koffiemachines:</strong> Mocht de klant gedurende de looptijd van dit contract besluiten om aanvullende koffiemachines te bestellen, zal deze order rechtstreeks onder het huidige contract vallen. Dit betekent dat de aanvullende apparaten dezelfde contractlooptijd volgen als het originele contract en zullen eindigen op {{ optional($contract->end_date)->format('d-m-Y') ?? '-' }}.</p>
+            </div>
+        </div>
+
+        <!-- Bank Details Section -->
+        <div class="terms-section">
+            <div class="section-title">Betaalgegevens</div>
+            <div class="terms-content">
+                <p><strong>Alle betalingen dienen plaats te vinden via de onderstaande rekening:</strong></p>
+                <p style="margin-top: 12px;"><strong>Rekeninghouder:</strong> Barroc Intens</p>
+                <p><strong>IBAN:</strong> NL91 ABNA 0417 1643 00</p>
+                <p style="margin-top: 12px; font-size: 10px; color: #666;">Gelieve het contract- of factuurnummer als referentie mee te geven bij betaling.</p>
             </div>
         </div>
 

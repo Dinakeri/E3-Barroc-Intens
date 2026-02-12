@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InvoiceMail;
 use App\Models\Contract;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
@@ -10,6 +11,7 @@ use App\Models\Order;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -77,36 +79,13 @@ class InvoiceController extends Controller
         return redirect()->route('invoices.show', $invoice->id)->with('success', 'Factuur succesvol aangemaakt.');
     }
 
-    public function testPdf()
+    public function send(Invoice $invoice)
     {
-        $customer = Customer::first();
-        if (! $customer) {
-            abort(404, 'No customer found — run customers seeder first');
-        }
+        $invoice->load('customer', 'order', 'contract');
+        Mail::to($invoice->customer->email)->send(new InvoiceMail($invoice));
 
-        $data = [
-            'customer' => $customer,
-            'invoice' => (object) [
-                'id' => 'TEST-1',
-                'invoice_date' => now()->toDateString(),
-                'due_date' => now()->addDays(14)->toDateString(),
-                'total_amount' => 150.00,
-            ],
-            'items' => [
-                ['description' => 'Product X', 'qty' => 2, 'price' => 25],
-                ['description' => 'Product Y', 'qty' => 1, 'price' => 100],
-            ],
-        ];
+        $invoice->update(['status' => 'sent']);
 
-        $html = view('invoices.template', $data)->render();
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-
-        $output = $dompdf->output();
-        return response($output, 200)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="test-invoice.pdf"');
+        return redirect()->route('invoices.show', $invoice->id)->with('success', 'Factuur succesvol verzonden.');
     }
 }

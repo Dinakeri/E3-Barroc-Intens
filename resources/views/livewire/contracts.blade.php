@@ -22,6 +22,12 @@
                     <option value="expired">Verlopen</option>
                     <option value="inactive">Inactief</option>
                 </flux:select>
+
+                <div class="ml-auto">
+                    <flux:button variant="primary" icon="plus" color="blue" href="{{ route('contracts.create') }}">
+                        Nieuwe contract
+                    </flux:button>
+                </div>
             </div>
             @if ($search || $status)
                 <div class="mt-4">
@@ -118,8 +124,8 @@
                                         <flux:button wire:click.stop="openDeleteModal({{ $contract }})"
                                             color="red" icon="trash" size="sm"></flux:button>
 
-                                        <flux:button wire:click.stop="openEditModal({{ $contract }})" color="blue"
-                                            icon="pencil-square" size="sm">
+                                        <flux:button wire:click.stop="openEditModal({{ $contract }})"
+                                            color="blue" icon="pencil-square" size="sm">
                                         </flux:button>
                                     </div>
                                 </td>

@@ -1,44 +1,43 @@
-<!DOCTYPE html>
-<html>
+<x-mail::message>
+# Uw offerte is gereed
 
-<head>
-    <meta charset="UTF-8">
-</head>
+Beste {{ $quote->customer->name }},
 
-<body style="font-family: Arial, sans-serif; background:#f4f4f4; padding:30px">
+Hartelijk dank voor uw interesse.
+Op basis van uw aanvraag hebben wij een offerte voor u opgesteld.
 
-    <div style="max-width:600px; margin:auto; background:white; padding:30px; border-radius:8px">
+---
 
-        @php use Illuminate\Support\Facades\Storage; @endphp
+### 📄 Offerte-overzicht
 
+<x-mail::table>
+    | | |
+    |---|---|
+    | Offertenummer | {{ $quote->id }} |
+    | Bedrag | € {{ number_format($quote->total_amount, 2, ',', '.') }} |
+    @if ($quote->valid_until)
+        | Geldig tot | {{ $quote->valid_until }} |
+    @endif
+</x-mail::table>
 
-        <h2 style="margin-bottom:10px">Your quote is ready</h2>
+@if ($quote->url)
+    De offerte is als **PDF bijgevoegd** in deze e-mail.
+@endif
 
-        <p>Dear {{ $quote->customer->name }},</p>
+---
 
-        <p>
-            We have prepared a quote for you.
-            You can view the quote using the button below.
-        </p>
+### Wat wilt u doen?
 
-        <p style="margin:30px 0">
-            <a href="{{ route('quotes.show', $quote->url) }}"
-                style="background:#2563eb; color:white; padding:12px 20px; text-decoration:none; border-radius:6px">
-                View quote
-            </a>
-        </p>
+<x-mail::button :url="$approveUrl" color="success">
+    Offerte goedkeuren
+</x-mail::button>
 
-        <p>
-            If you have any questions, feel free to contact us.
-        </p>
+<x-mail::button :url="$rejectUrl" color="error">
+    Offerte afwijzen
+</x-mail::button>
 
-        <p style="margin-top:40px">
-            Kind regards,<br>
-            <strong>Your Company</strong>
-        </p>
+---
 
-    </div>
-
-</body>
-
-</html>
+Met vriendelijke groet,
+**Barroc Intens Team**
+</x-mail::message>

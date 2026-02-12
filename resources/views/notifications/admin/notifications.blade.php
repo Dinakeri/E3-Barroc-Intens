@@ -122,11 +122,6 @@
                                             </form>
                                         @endif
 
-                                        <flux:button href="{{ $notification->data['url'] ?? '#' }}" size="sm"
-                                            variant="ghost">
-                                            <flux:icon.arrow-top-right-on-square class="size-4" />
-                                        </flux:button>
-
                                         <form method="POST"
                                             action="{{ route('notifications.destroy', $notification->id) }}"
                                             class="inline" onsubmit="return confirm('Deze melding verwijderen?')">
