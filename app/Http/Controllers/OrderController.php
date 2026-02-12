@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use FontLib\Table\Type\name;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -44,19 +45,41 @@ class OrderController extends Controller
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
-        $order = Order::create([
-            'customer_id' => $data['customer_id'],
-            'order_date' => $data['order_date'],
-            'status' => $data['status'],
-            'total_amount' => $data['total_amount'],
-        ]);
-
-        foreach ($data['items'] as $item) {
-            $order->orderItems()->create([
-                'product_id' => $item['product_id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
+        $order = DB::transaction(function () use ($data) {
+            $order = Order::create([
+                'customer_id' => $data['customer_id'],
+                'order_date' => $data['order_date'],
+                'status' => $data['status'],
+                'total_amount' => $data['total_amount'],
             ]);
+
+            foreach ($data['items'] as $item) {
+                $product = Product::findOrFail($item['product_id']);
+
+                if ($product->stock < $item['quantity']) {
+                    return redirect()->back()->withErrors([
+                        'items' => 'Onvoldoende voorraad voor ' . $product->name . '.',
+                    ])->withInput();
+                }
+
+                $product->stock -= $item['quantity'];
+                if ($product->stock === 0) {
+                    $product->status = 'out_of_stock';
+                }
+                $product->save();
+
+                $order->orderItems()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                ]);
+            }
+
+            return $order;
+        });
+
+        if ($order instanceof \Illuminate\Http\RedirectResponse) {
+            return $order;
         }
 
         return redirect()->route('orders.show', $order);
@@ -90,28 +113,64 @@ class OrderController extends Controller
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
-        $order->update([
-            'customer_id' => $data['customer_id'],
-            'order_date' => $data['order_date'],
-            'status' => $data['status'],
-            'total_amount' => $data['total_amount'],
-        ]);
+        $result = DB::transaction(function () use ($data, $order) {
+            $order->update([
+                'customer_id' => $data['customer_id'],
+                'order_date' => $data['order_date'],
+                'status' => $data['status'],
+                'total_amount' => $data['total_amount'],
+            ]);
 
-        $existingItemIds = [];
+            $existingItems = $order->orderItems()->get()->keyBy('product_id');
+            $incomingItems = collect($data['items'])->keyBy('product_id');
 
-        foreach ($data['items'] as $item) {
-            $orderItem = $order->orderItems()->updateOrCreate(
-                ['product_id' => $item['product_id']],
-                [
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                ]
-            );
-            $existingItemIds[] = $orderItem->id;
+            $allProductIds = $existingItems->keys()->merge($incomingItems->keys())->unique();
+
+            foreach ($allProductIds as $productId) {
+                $oldQty = (int) optional($existingItems->get($productId))->quantity;
+                $newQty = (int) optional($incomingItems->get($productId))['quantity'];
+                $delta = $newQty - $oldQty;
+
+                if ($delta !== 0) {
+                    $product = Product::findOrFail($productId);
+
+                    if ($delta > 0 && $product->stock < $delta) {
+                        return redirect()->back()->withErrors([
+                            'items' => 'Onvoldoende voorraad voor ' . $product->name . '.',
+                        ])->withInput();
+                    }
+
+                    $product->stock -= $delta;
+                    if ($product->stock === 0) {
+                        $product->status = 'out_of_stock';
+                    } elseif ($product->stock > 0 && $product->status === 'out_of_stock') {
+                        $product->status = 'active';
+                    }
+                    $product->save();
+                }
+            }
+
+            $existingItemIds = [];
+
+            foreach ($data['items'] as $item) {
+                $orderItem = $order->orderItems()->updateOrCreate(
+                    ['product_id' => $item['product_id']],
+                    [
+                        'quantity' => $item['quantity'],
+                        'price' => $item['price'],
+                    ]
+                );
+                $existingItemIds[] = $orderItem->id;
+            }
+
+            $order->orderItems()->whereNotIn('id', $existingItemIds)->delete();
+
+            return $order;
+        });
+
+        if ($result instanceof \Illuminate\Http\RedirectResponse) {
+            return $result;
         }
-
-        // Delete removed items
-        $order->orderItems()->whereNotIn('id', $existingItemIds)->delete();
 
         return redirect()->route('orders.show', $order);
     }

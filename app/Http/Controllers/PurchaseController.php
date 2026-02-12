@@ -52,9 +52,15 @@ class PurchaseController extends Controller
 
                 $unitCost = (float) $product->cost_price;
 
-                $product->stock += $quantity;
-                if ($product->status === 'out_of_stock' && $product->stock > 0) {
-                    $product->status = 'active';
+                if ($product->stock < $quantity) {
+                    return redirect()->back()->withErrors([
+                        'quantity' => 'Onvoldoende voorraad voor deze bestelling.'
+                    ])->withInput();
+                }
+
+                $product->stock -= $quantity;
+                if ($product->stock === 0) {
+                    $product->status = 'out_of_stock';
                 }
                 $product->save();
             } else {
@@ -63,9 +69,15 @@ class PurchaseController extends Controller
 
                 $unitCost = (float) $part->cost_price;
 
-                $part->stock += $quantity;
-                if ($part->status === 'out_of_stock' && $part->stock > 0) {
-                    $part->status = 'active';
+                if ($part->stock < $quantity) {
+                    return redirect()->back()->withErrors([
+                        'quantity' => 'Onvoldoende voorraad voor deze bestelling.'
+                    ])->withInput();
+                }
+
+                $part->stock -= $quantity;
+                if ($part->stock === 0) {
+                    $part->status = 'out_of_stock';
                 }
                 $part->save();
             }

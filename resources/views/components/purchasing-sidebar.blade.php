@@ -22,7 +22,7 @@
         class="mb-4" 
         icon="cube"
         :current="$current === 'products'">
-        Voorraad
+        Producten
     </flux:navlist.item>
 
     <flux:navlist.item 

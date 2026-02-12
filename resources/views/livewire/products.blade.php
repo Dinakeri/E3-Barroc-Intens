@@ -2,8 +2,8 @@
     <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between">
             <div>
-                <flux:heading>Voorraad</flux:heading>
-                <flux:subheading>Beheer en filter uw productvoorraad</flux:subheading>
+                <flux:heading>Producten</flux:heading>
+                <flux:subheading>Beheer en filter uw producten</flux:subheading>
             </div>
         </div>
 
