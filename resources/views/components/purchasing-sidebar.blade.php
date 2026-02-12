@@ -5,14 +5,26 @@
         :current="$current === 'dashboard'">
         Startpagina
     </flux:navlist.item>
-
-    <flux:navlist.item href="#" class="mb-4" icon="shopping-cart" :current="$current === 'orders'">
+    
+    <flux:navlist.item 
+        href="{{ route('purchases.index') }}" 
+        class="mb-4" 
+        icon="shopping-cart"
+        :current="$current === 'purchases'">
         Bestellingen
     </flux:navlist.item>
 
     <flux:navlist.item href="{{ route('products.index') }}" class="mb-4" icon="cube"
         :current="$current === 'products'">
-        Voorraad
+        Producten
+    </flux:navlist.item>
+
+    <flux:navlist.item 
+        href="{{ route('parts.index') }}" 
+        class="mb-4" 
+        icon="squares-plus"
+        :current="$current === 'parts'">
+        Onderdelen
     </flux:navlist.item>
 
     <flux:navlist.item href="#" class="mb-4" icon="users" :current="$current === 'suppliers'">

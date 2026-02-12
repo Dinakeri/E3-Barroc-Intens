@@ -8,6 +8,8 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\maintenanceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\PartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuoteController;
@@ -169,6 +171,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('purchasing/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('purchasing/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('purchasing/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        // Parts/Onderdelen routes
+        Route::get('purchasing/parts', [PartController::class, 'index'])->name('parts.index');
+        Route::get('purchasing/parts/create', [PartController::class, 'create'])->name('parts.create');
+        Route::post('purchasing/parts', [PartController::class, 'store'])->name('parts.store');
+        Route::get('purchasing/parts/{part}/edit', [PartController::class, 'edit'])->name('parts.edit');
+        Route::put('purchasing/parts/{part}', [PartController::class, 'update'])->name('parts.update');
+        Route::delete('purchasing/parts/{part}', [PartController::class, 'destroy'])->name('parts.destroy');
+
+        // Purchases/Inkoop routes
+        Route::get('purchasing/purchases', [PurchaseController::class, 'index'])->name('purchases.index');
+        Route::get('purchasing/purchases/create', [PurchaseController::class, 'create'])->name('purchases.create');
+        Route::post('purchasing/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
     });
 
     // Preview and test routes

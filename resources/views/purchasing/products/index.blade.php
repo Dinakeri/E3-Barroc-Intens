@@ -1,5 +1,5 @@
 <x-layouts.dashboard>
-    @section('title', 'Voorraad Beheer')
+    @section('title', 'Producten')
     
     <livewire:products />
 
