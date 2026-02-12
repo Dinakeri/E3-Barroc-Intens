@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\NewCustomerNotification;
+use App\Models\Contract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;

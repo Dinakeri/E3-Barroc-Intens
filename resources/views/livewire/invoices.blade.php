@@ -79,7 +79,7 @@
 
                             <td class="px-4 py-3">
                                 <div class="text-sm text-zinc-900 dark:text-zinc-100">
-                                    {{ $invoice->valid_until ? \Carbon\Carbon::parse($invoice->valid_until)->format('d-m-Y') : 'N.v.t.' }}
+                                    {{ $invoice->valid_until }}
                                 </div>
                             </td>
 
