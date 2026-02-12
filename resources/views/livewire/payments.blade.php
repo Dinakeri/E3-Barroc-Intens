@@ -6,7 +6,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="rounded-xl border border-zinc-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 p-6">
+    <div class="rounded-xl border border-zinc-200 bg-white dark:bg-zinc-800 dark:border-zinc-700 p-6 mb-10">
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div class="lg:col-span-2">
                 <flux:input wire:model.live.debounce.300ms="search" placeholder="Zoeken op klantnaam of e-mailadres..."

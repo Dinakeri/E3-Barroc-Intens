@@ -56,6 +56,8 @@ Route::get('dashboard', function () {
 
 Route::get('/quotes/{quote}/approve', [QuoteController::class, 'approve'])->name('quotes.approve')->middleware('signed');
 Route::get('/quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject')->middleware('signed');
+Route::get('/contracts/{contract}/approve', [ContractController::class, 'approve'])->name('contracts.approve')->middleware('signed');
+Route::get('/contracts/{contract}/reject', [ContractController::class, 'reject'])->name('contracts.reject')->middleware('signed');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -85,10 +87,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
         Route::get('invoices/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
         Route::get('test-invoice', [InvoiceController::class, 'testPdf'])->name('invoices.test');
-        Route::get('dashboards/invoices', function () {
-            $customers = \App\Models\Customer::orderBy('name')->get();
-            return view('finance.invoices', compact('customers'));
-        })->name('dashboards.invoices');
+        Route::post('invoices/{invoice}/send', [InvoiceController::class, 'send'])->name('invoices.send');
         // Payments
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
@@ -106,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
         Route::put('/contracts/{contract}', [ContractController::class, 'update'])->name('contracts.update');
         Route::delete('/contracts/{contract}', [ContractController::class, 'destroy'])->name('contracts.destroy');
+        Route::post('/contracts/{contract}/send', [ContractController::class, 'send'])->name('contracts.send');
     }); // end finance
 
     // Maintenance routes - only maintenance and admin roles

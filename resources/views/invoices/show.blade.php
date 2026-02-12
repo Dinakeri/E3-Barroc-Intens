@@ -22,12 +22,12 @@
     <div class="mb-6">
         @php
             $statusColors = [
-                'draft' => 'bg-amber-100 text-amber-800',
-                'sent' => 'bg-blue-100 text-blue-800',
-                'paid' => 'bg-emerald-100 text-emerald-800',
-                'cancelled' => 'bg-red-100 text-red-800',
+                'draft' => 'bg-amber-900 text-amber-200',
+                'sent' => 'bg-blue-900 text-blue-200',
+                'paid' => 'bg-emerald-900 text-emerald-200',
+                'cancelled' => 'bg-red-900 text-red-200',
             ];
-            $statusColor = $statusColors[$invoice->status] ?? 'bg-gray-100 text-gray-800';
+            $statusColor = $statusColors[$invoice->status] ?? 'bg-zinc-700 text-zinc-200';
             $statusLabels = [
                 'draft' => 'Concept',
                 'sent' => 'Verzonden',
@@ -43,30 +43,31 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <!-- Main Invoice Information -->
         <div class="lg:col-span-2">
-            <div class="bg-zinc-800 rounded-lg border border-zinc-200 shadow-sm">
-                <div class="border-b border-zinc-200 bg-gradient-to-r from-black to-zinc-900 px-6 py-4 rounded-t-lg">
+            <div class="bg-zinc-800 rounded-lg border border-zinc-700 shadow-sm">
+                <div class="border-b border-zinc-700 bg-gradient-to-r from-black to-zinc-900 px-6 py-4 rounded-t-lg">
                     <flux:heading size="lg" class="text-white">Factuurinformatie</flux:heading>
                 </div>
                 <div class="p-6 space-y-6">
                     <!-- Invoice Dates -->
-                    <div class="border-b border-zinc-100 pb-6">
+                    <div class="border-b border-zinc-700 pb-6">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <flux:text variant="label" class="font-semibold text-zinc-50 mb-2">Factuurdatum
+                                <flux:text variant="label" class="font-semibold text-white mb-2">Factuurdatum
                                 </flux:text>
-                                <flux:text class="text-lg">{{ $invoice->created_at->format('d-m-Y') }}</flux:text>
+                                <flux:text class="text-lg text-zinc-100">{{ $invoice->created_at->format('d-m-Y') }}
+                                </flux:text>
                             </div>
                             <div>
-                                <flux:text variant="label" class="font-semibold text-zinc-50 mb-2">Vervaldatum
+                                <flux:text variant="label" class="font-semibold text-white mb-2">Vervaldatum
                                 </flux:text>
-                                <flux:text class="text-lg">{{ $invoice->valid_until }}</flux:text>
+                                <flux:text class="text-lg text-zinc-100">{{ $invoice->valid_until }}</flux:text>
                             </div>
                         </div>
                     </div>
 
                     <!-- Klant Information -->
-                    <div class="border-b border-zinc-100 pb-6">
-                        <flux:text variant="label" class="font-semibold text-zinc-50 mb-3 block">Klantinformatie
+                    <div class="border-b border-zinc-700 pb-6">
+                        <flux:text variant="label" class="font-semibold text-white mb-3 block">Klantinformatie
                         </flux:text>
                         <div class="space-y-2">
                             <flux:text class="text-lg font-semibold text-zinc-100">
@@ -84,8 +85,8 @@
 
                     <!-- Order Information -->
                     @if ($invoice->order)
-                        <div class="border-b border-zinc-100 pb-6">
-                            <flux:text variant="label" class="font-semibold text-zinc-50 mb-3 block">
+                        <div class="border-b border-zinc-700 pb-6">
+                            <flux:text variant="label" class="font-semibold text-white mb-3 block">
                                 Bestellinginformatie</flux:text>
                             <div class="space-y-2">
                                 <flux:text class="text-sm">
@@ -101,8 +102,8 @@
 
                     <!-- Contract Information -->
                     @if ($invoice->contract)
-                        <div class="border-b border-zinc-100 pb-6">
-                            <flux:text variant="label" class="font-semibold text-zinc-50 mb-3 block">Contractinformatie
+                        <div class="border-b border-zinc-700 pb-6">
+                            <flux:text variant="label" class="font-semibold text-white mb-3 block">Contractinformatie
                             </flux:text>
                             <div class="space-y-2">
                                 <flux:text class="text-sm">
@@ -119,7 +120,7 @@
 
                     <!-- Total Amount -->
                     <div>
-                        <flux:text variant="label" class="font-semibold text-zinc-50 mb-2 block">Factuurbedrag
+                        <flux:text variant="label" class="font-semibold text-white mb-2 block">Factuurbedrag
                         </flux:text>
                         <div class="flex items-baseline gap-2">
                             <flux:text class="text-3xl font-bold text-amber-400">
@@ -134,17 +135,17 @@
         <!-- Summary Cards -->
         <div class="space-y-4">
             <!-- Invoice ID -->
-            <div class="bg-zinc-800 rounded-lg border border-zinc-200 p-4">
-                <flux:text variant="label" class="font-semibold text-zinc-50 mb-2 block">Factuur-ID</flux:text>
-                <flux:text class="text-sm font-mono text-zinc-200 break-all">{{ $invoice->id }}</flux:text>
+            <div class="bg-zinc-800 rounded-lg border border-zinc-700 p-4">
+                <flux:text variant="label" class="font-semibold text-white mb-2 block">Factuur-ID</flux:text>
+                <flux:text class="text-sm font-mono text-zinc-300 break-all">{{ $invoice->id }}</flux:text>
             </div>
 
             <!-- Related Contract -->
             @if ($invoice->contract)
-                <div class="bg-zinc-800 rounded-lg border border-zinc-200 shadow-sm p-4">
-                    <flux:text variant="label" class="font-semibold text-zinc-50 mb-3 block">Gerelateerd Contract
+                <div class="bg-zinc-800 rounded-lg border border-zinc-700 shadow-sm p-4">
+                    <flux:text variant="label" class="font-semibold text-white mb-3 block">Gerelateerd Contract
                     </flux:text>
-                    <flux:text class="text-sm text-zinc-200 mb-3">
+                    <flux:text class="text-sm text-zinc-300 mb-3">
                         Contract #{{ $invoice->contract->id }}
                     </flux:text>
                     <flux:button variant="primary" size="sm"
@@ -154,24 +155,37 @@
                 </div>
             @endif
 
-            {{-- <!-- Payments -->
+            <!-- Payments -->
             <div class="bg-zinc-800 rounded-lg border border-zinc-200 shadow-sm p-4">
                 <flux:text variant="label" class="font-semibold text-zinc-50 mb-3 block">Betalingen</flux:text>
-                <div class="text-3xl font-bold text-emerald-500 mb-3">
-                    {{ $invoice->payments()->count() }}
-                </div>
-                <flux:button variant="primary" size="sm"
-                    href="{{ route('payments.index', ['invoice_id' => $invoice->id]) }}" class="w-full">
-                    Bekijk betalingen
-                </flux:button> --}}
+                @if ($invoice->payments->count() > 0)
+                    <div class="space-y-2 mb-4">
+                        @foreach ($invoice->payments as $payment)
+                            <a href="{{ route('payments.show', $payment) }}"
+                                class="flex items-center justify-between p-2 rounded bg-zinc-700 hover:bg-zinc-600 transition text-emerald-400 hover:text-emerald-300">
+                                <span class="text-sm font-mono">Betaling #{{ $payment->id }}</span>
+                                <flux:icon.arrow-up-right class="size-4" />
+                            </a>
+                        @endforeach
+                    </div>
+                    <flux:button variant="ghost" size="sm" href="{{ route('payments.index') }}"
+                        class="w-full text-zinc-300">
+                        Alle betalingen
+                    </flux:button>
+                @else
+                    <flux:text class="text-sm text-zinc-400 mb-4">Nog geen betalingen gegenereerd</flux:text>
+                    <flux:button variant="primary" size="sm" href="{{ route('payments.create') }}" class="w-full">
+                        Betaling aanmaken
+                    </flux:button>
+                @endif
             </div>
 
             <!-- Created Info -->
-            <div class="bg-zinc-800 rounded-lg border border-zinc-200 p-4 text-xs">
-                <flux:text variant="label" class="font-semibold text-zinc-50 mb-2 block">Aangemaakt</flux:text>
-                <flux:text class="text-zinc-200">{{ $invoice->created_at->format('d M Y H:i') }}</flux:text>
+            <div class="bg-zinc-800 rounded-lg border border-zinc-700 p-4 text-xs">
+                <flux:text variant="label" class="font-semibold text-white mb-2 block">Aangemaakt</flux:text>
+                <flux:text class="text-zinc-300">{{ $invoice->created_at->format('d M Y H:i') }}</flux:text>
                 @if ($invoice->created_at != $invoice->updated_at)
-                    <flux:text class="text-zinc-500 mt-2">Bijgewerkt: {{ $invoice->updated_at->format('d M Y H:i') }}
+                    <flux:text class="text-zinc-400 mt-2">Bijgewerkt: {{ $invoice->updated_at->format('d M Y H:i') }}
                     </flux:text>
                 @endif
             </div>
@@ -180,30 +194,24 @@
 
     <!-- PDF Document Section -->
     @if ($invoice->pdf_path)
-        <div class="bg-zinc-800 rounded-lg border border-zinc-200 shadow-sm">
-            <div class="flex items-center justify-between px-6 py-4 border-b">
+        <div class="bg-zinc-800 rounded-lg border border-zinc-700 shadow-sm mb-6">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-700">
                 <div class="rounded-t-lg">
-                    <flux:heading size="lg" class="text-white">Factuurdocument</flux:heading>
+                    <flux:heading size="lg" class="text-white uppercase">Factuur</flux:heading>
                 </div>
                 <div class="p-4">
                     <div class="flex gap-3">
-                        <flux:button href="{{ asset('storage/' . $invoice->pdf_path) }}" target="_blank"
-                            variant="filled" color="blue">
-                            <flux:icon.arrow-down-tray class="size-4 mr-2" />
-                            PDF downloaden
-                        </flux:button>
-                        <flux:button href="{{ asset('storage/' . $invoice->pdf_path) }}" target="_blank"
-                            variant="ghost">
+                        <flux:button href="{{ Storage::url($invoice->pdf_path) }}" target="_blank" variant="ghost">
                             <flux:icon.arrow-top-right-on-square class="size-4 mr-2" />
                             Bekijk in nieuwe tab
                         </flux:button>
                     </div>
                 </div>
             </div>
-            <div class="bg-zinc-50 dark:bg-zinc-900 rounded-b-xl">
+            <div class="bg-zinc-900 rounded-b-xl">
                 @if ($invoice->pdf_path)
                     <embed src="{{ Storage::url($invoice->pdf_path) }}" type="application/pdf"
-                        class="w-full h-[650px] rounded-md border" />
+                        class="w-full h-[650px] rounded-md border border-zinc-700" />
                 @else
                     <div class="text-center text-zinc-300 py-16">
                         PDF is nog niet gegenereerd.
@@ -212,5 +220,29 @@
             </div>
         </div>
     @endif
+
+    {{-- Footer --}}
+    <div class="bg-zinc-900 rounded-xl border border-zinc-700 p-6 text-sm text-zinc-300 mb-6">
+        <p>
+            Dank u voor uw vertrouwen in Barroc Intens. Wij stellen het zeer op prijs dat u voor onze diensten kiest.
+            Gelieve het factuurbedrag voor de vervaldatum over te maken aan het rekeningnummer vermeld op de factuur.
+            Bij vragen kunt u ons altijd bereiken via support@barrocintens.nl
+        </p>
+    </div>
+
+    {{-- Actions --}}
+    <div class="flex justify-end gap-3">
+        <flux:button variant="ghost" href="{{ route('invoices.index') }}">
+            Terug
+        </flux:button>
+
+        <form action="{{ route('invoices.send', $invoice) }}" method="POST">
+            @csrf
+            <flux:button type="submit" variant="primary">
+                Factuur verzenden
+            </flux:button>
+
+        </form>
+    </div>
 
 </x-layouts.dashboard>

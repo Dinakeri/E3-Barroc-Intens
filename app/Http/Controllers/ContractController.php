@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContractMail;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Invoice;
@@ -10,7 +11,7 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
-
+use Illuminate\Support\Facades\Mail;
 
 class ContractController extends Controller
 {
@@ -45,7 +46,7 @@ class ContractController extends Controller
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'total_amount' => $quote->total_amount,
-            'status' => 'active',
+            'status' => 'pending',
         ]);
 
         $pdf = FacadePdf::loadView('contracts.template', [
@@ -115,23 +116,49 @@ class ContractController extends Controller
 
     public function show(Contract $contract)
     {
+        $contract->load('customer', 'quote.order', 'quote.order.orderItems', 'invoices');
         return view('contracts.show', compact('contract'));
+    }
+
+    public function send(Contract $contract)
+    {
+        $invoice = Invoice::where('contract_id', $contract->id)->where('order_id', $contract->quote->order_id)->latest()->first();
+        Mail::to($contract->customer->email)->send(new ContractMail($contract, $invoice));
+
+        $invoice->update(['status' => 'sent']);
+
+        return redirect()
+            ->route('contracts.show', $contract)
+            ->with('success', 'Contract verzonden naar klant.');
     }
 
     public function approve(Contract $contract)
     {
-        $contract->update(['status' => 'approved']);
+        // abort_if($contract->status !== 'pending', 403, 'Contract is niet in afwachting van goedkeuring.');
 
-        $invoice = Invoice::create([
-            'customer_id' => $contract->customer_id,
-            'contract_id' => $contract->id,
-            'total_amount' => $contract->total_amount,
-            'invoice_date' => now(),
-            'due_date' => now()->addDays(14),
+
+        return view('contracts.result', [
+            'title' => 'Contract Goedgekeurd',
+            'message' => 'Het contract is goedgekeurd en de factuur is automatisch aangemaakt.',
         ]);
+    }
 
-        return redirect()
-            ->route('invoices.show', $invoice)
-            ->with('success', 'Contract goedgekeurd en factuur automatisch aangemaakt.');
+    public function reject(Contract $contract)
+    {
+        abort_if($contract->status !== 'pending', 403, 'Contract is niet in afwachting van goedkeuring.');
+
+        $contract->update(['status' => 'rejected']);
+
+        return view('contracts.result', [
+            'title' => 'Contract Afgewezen',
+            'message' => 'Het contract is afgewezen. Neem contact op met onze klantenservice voor meer informatie.',
+        ]);
+    }
+
+    public function destroy(Contract $contract)
+    {
+        $contract->delete();
+
+        return redirect()->route('contracts.index')->with('success', 'Contract succesvol verwijderd.');
     }
 }

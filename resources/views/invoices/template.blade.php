@@ -155,6 +155,12 @@
                         <td>{{ $invoice->valid_until }}</td>
                     </tr>
                 </table>
+
+                <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px;">
+                    <p style="font-size: 11px; color: #666; margin-bottom: 5px;"><strong>Betaalgegevens:</strong></p>
+                    <p style="font-size: 10px; color: #666; margin: 2px 0;"><strong>Rekeninghouder:</strong> Barroc Intens</p>
+                    <p style="font-size: 10px; color: #666; margin: 2px 0;"><strong>IBAN:</strong> NL91 ABNA 0417 1643 00</p>
+                </div>
             </div>
         </div>
 
